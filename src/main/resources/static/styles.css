@@ -1,3 +1,7 @@
+:root {
+    --aog-color: #9ACBD0;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,7 +23,7 @@ body {
     align-items: center;
     align-content: center;
     justify-content: center;
-    background: #9ACBD0;
+    background: var(--aog-color);
 }
 
 #navbar li {
@@ -157,7 +161,7 @@ body {
     width: 100%;
     text-align: center;
     padding: 10px;
-    background-color: #9ACBD0;
+    background-color: var(--aog-color);
     color: #000000;
     border-radius: 10px;
     align-items: center;
@@ -207,9 +211,42 @@ body {
     flex-direction: column;
 }
 
+.left-content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .generic-container {
     background-color: rgba(255, 255, 255, 0.25);
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
+    width: 50%;
+}
+
+.form label {
+    color: white;
+}
+
+.form label input {
+    background-color: var(--aog-color);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Verdana, sans-serif;
+    border: 2px solid white;
+}
+
+.form-error label input {
+    border: 2px solid red;
+}
+
+.error-list ul {
+    list-style: none;
+}
+
+.error-list li {
+    color: red;
+    font-size: 0.9rem;
 }

@@ -14,10 +14,10 @@
 <div id="navbar">
     <ul>
         <li style="left: 0; position: absolute">
-            <a href="">🃏 aceofgrad.es 🃏</a>
+            <a href="/">🃏 aceofgrad.es 🃏</a>
         </li>
         <li>
-            <a href="">Home</a>
+            <a href="/">Home</a>
         </li>
         <#if user.role == "ADMIN">
             <li>
@@ -29,7 +29,7 @@
                 <a href="/register">Register</a>
             </li>
             <li>
-                <a href="">Log In</a>
+                <a href="/login">Log In</a>
             </li>
         <#elseif user.role == "USER" || user.role == "ADMIN">
             <li>
@@ -44,6 +44,9 @@
             <li>
                 <a href="">${user.username}</a>
             </li>
+            <li style="right: 0; position: absolute">
+                <a href="/api/logout">Log Out</a>
+            </li>
         </#if>
     </ul>
 </div>
@@ -55,5 +58,4 @@
     <p>the legendmixer foundation</p>
 </footer>
 </body>
-</html>
 </#macro>

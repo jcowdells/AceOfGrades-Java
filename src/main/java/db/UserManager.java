@@ -33,19 +33,20 @@ public class UserManager {
         }
     }
 
-    public void createUser(String username, String password, String email_address) throws SQLException {
+    public void createUser(String username, String password, String email_address, AogRole role) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "INSERT INTO tblUser(username, passwordHash, emailAddress) VALUES(?, ?, ?);"
+                    "INSERT INTO tblUser(username, passwordHash, emailAddress, role) VALUES(?, ?, ?, ?);"
             );
             p_statement.setString(1, username);
             p_statement.setString(2, BCrypt.hashpw(password, BCrypt.gensalt(12)));
             p_statement.setString(3, email_address);
+            p_statement.setString(4, role.toString());
             p_statement.execute();
         }
     }
 
-    public int getUserID( String username) throws SQLException {
+    public int getUserID(String username) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT id FROM tblUser WHERE username = ?"

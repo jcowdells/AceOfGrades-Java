@@ -1,3 +1,5 @@
+import api_handlers.LoginApiHandler;
+import api_handlers.LogoutApiHandler;
 import api_handlers.RegisterApiHandler;
 import auth.AogAccessHandler;
 import auth.AogRole;
@@ -38,10 +40,15 @@ public class Main {
 
         app.beforeMatched(new AogAccessHandler());
         app.before(new BaseHandler(user_manager));
+
         app.get("/", new IndexHandler());
         app.get("/register/", new RegisterHandler());
+        app.get("/login/", new LoginHandler());
+
         app.post("/api/register/", new RegisterApiHandler(user_manager));
-        app.post("/login/", new LoginHandler(user_manager));
+        app.post("/api/login/", new LoginApiHandler(user_manager));
+        app.get("/api/logout/", new LogoutApiHandler());
+
         app.start(4409);
     }
 
