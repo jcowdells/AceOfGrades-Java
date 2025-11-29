@@ -2,7 +2,7 @@ package auth;
 
 import io.javalin.security.RouteRole;
 
-public enum AogRoles implements RouteRole {
+public enum AogRole implements RouteRole {
     ANYONE,
     USER,
     ADMIN

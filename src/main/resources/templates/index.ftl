@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <p>${role}</p>
-</body>
-</html>
+<#include "/common/base.ftl">
+<@content>
+    <p>This is a mega test</p>
+    <p>${user.role}</p>
+</@content>
