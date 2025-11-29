@@ -199,3 +199,17 @@ body {
     padding: 20px;
     margin: 10px;
 }
+
+.centre-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.generic-container {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+}

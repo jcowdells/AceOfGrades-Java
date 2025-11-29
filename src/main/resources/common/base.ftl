@@ -1,9 +1,13 @@
 <#macro content>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="/static/htmx.min.js"></script>
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <title>aceofgrad.es</title>
 </head>
 <body>
@@ -22,7 +26,7 @@
         </#if>
         <#if user.role == "ANYONE">
             <li>
-                <a href="">Sign Up</a>
+                <a href="/register">Register</a>
             </li>
             <li>
                 <a href="">Log In</a>

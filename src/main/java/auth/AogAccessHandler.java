@@ -23,6 +23,12 @@ public class AogAccessHandler implements Handler {
             return;
         }
 
+        // if no roles are set, assume public
+        if (context.routeRoles().isEmpty()) {
+            return;
+        }
+
+        // otherwise get the user role and make sure it is allowed
         AogRole role = getUserRole(context);
         if (!context.routeRoles().contains(role)) {
             throw new UnauthorizedResponse();

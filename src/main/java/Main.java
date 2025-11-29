@@ -1,3 +1,4 @@
+import api_handlers.RegisterApiHandler;
 import auth.AogAccessHandler;
 import auth.AogRole;
 import com.zaxxer.hikari.HikariConfig;
@@ -29,12 +30,17 @@ public class Main {
                static_files.hostedPath = "/static";
                static_files.directory = "static";
            });
+            config.staticFiles.add(static_files -> {
+                static_files.hostedPath = "/";
+                static_files.directory = "favicon";
+            });
         });
 
         app.beforeMatched(new AogAccessHandler());
         app.before(new BaseHandler(user_manager));
-        app.get("/", new IndexHandler(), AogRole.ANYONE, AogRole.USER, AogRole.ADMIN);
-        app.post("/register/", new RegisterHandler(user_manager));
+        app.get("/", new IndexHandler());
+        app.get("/register/", new RegisterHandler());
+        app.post("/api/register/", new RegisterApiHandler(user_manager));
         app.post("/login/", new LoginHandler(user_manager));
         app.start(4409);
     }
