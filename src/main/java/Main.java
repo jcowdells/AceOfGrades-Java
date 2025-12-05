@@ -6,10 +6,7 @@ import auth.AogRole;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import db.UserManager;
-import handlers.BaseHandler;
-import handlers.IndexHandler;
-import handlers.LoginHandler;
-import handlers.RegisterHandler;
+import handlers.*;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinFreemarker;
 
@@ -44,6 +41,7 @@ public class Main {
         app.get("/", new IndexHandler());
         app.get("/register/", new RegisterHandler());
         app.get("/login/", new LoginHandler());
+        app.get("/quiz/", new QuizHandler());
 
         app.post("/api/register/", new RegisterApiHandler(user_manager));
         app.post("/api/login/", new LoginApiHandler(user_manager));
