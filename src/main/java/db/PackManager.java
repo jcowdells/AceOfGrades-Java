@@ -1,0 +1,36 @@
+package db;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class PackManager {
+    private final DataSource data_source;
+
+    public PackManager(DataSource data_source) throws SQLException {
+        this.data_source = data_source;
+        try (Connection connection = data_source.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS tblPack (id INTEGER PRIMARY KEY, creator_id INTEGER, name TEXT, description TEXT, front_color TEXT, back_color TEXT, is_public INTEGER, FOREIGN KEY(creator_id) REFERENCES tblUser(id));"
+            );
+        }
+    }
+
+    public void createPack(int creator_id, String name, String description, String front_color, String back_color, boolean is_public) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "INSERT INTO tblPack(creator_id, name, description, front_color, back_color, is_public) VALUES(?, ?, ?, ?, ?, ?);"
+            );
+            p_statement.setInt(1, creator_id);
+            p_statement.setString(2, name);
+            p_statement.setString(3, description);
+            p_statement.setString(4, front_color);
+            p_statement.setString(5, back_color);
+            p_statement.setInt(6, is_public ? 1 : 0);
+            p_statement.execute();
+        }
+    }
+}
