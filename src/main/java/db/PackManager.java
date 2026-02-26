@@ -1,10 +1,9 @@
 package db;
 
+import core.Pair;
+
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class PackManager {
     private final DataSource data_source;
@@ -31,6 +30,30 @@ public class PackManager {
             p_statement.setString(5, back_color);
             p_statement.setInt(6, is_public ? 1 : 0);
             p_statement.execute();
+        }
+    }
+
+    public Pair<String, String> getPackColor(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT front_color, back_color FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return new Pair<>("#000000", "#000000");
+            return new Pair<>(result.getString(1), result.getString(2));
+        }
+    }
+
+    public boolean hasPack(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            return result.next();
         }
     }
 }

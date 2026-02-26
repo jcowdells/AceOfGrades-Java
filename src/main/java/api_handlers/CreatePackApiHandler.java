@@ -31,12 +31,6 @@ public class CreatePackApiHandler implements Handler {
         final String is_public_str = context.formParam("is_public");
         final boolean is_public = is_public_str != null && !is_public_str.isEmpty();
 
-        System.out.println(name);
-        System.out.println(description);
-        System.out.println(front_color);
-        System.out.println(back_color);
-        System.out.println(is_public);
-
         CreatePackForm create_pack_form = new CreatePackForm(
                 name,
                 description,

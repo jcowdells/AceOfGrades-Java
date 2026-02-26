@@ -1,11 +1,9 @@
-import api_handlers.CreatePackApiHandler;
-import api_handlers.LoginApiHandler;
-import api_handlers.LogoutApiHandler;
-import api_handlers.RegisterApiHandler;
+import api_handlers.*;
 import auth.AogAccessHandler;
 import auth.AogRole;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import db.CardManager;
 import db.PackManager;
 import db.UserManager;
 import freemarker.template.Configuration;
@@ -25,6 +23,7 @@ public class Main {
         DataSource data_source = new HikariDataSource(hikari_config);
         UserManager user_manager = new UserManager(data_source);
         PackManager pack_manager = new PackManager(data_source);
+        CardManager card_manager = new CardManager(data_source);
 
         // create da app
         Javalin app = Javalin.create(config -> {
@@ -53,11 +52,13 @@ public class Main {
         app.get("/login/", new LoginHandler());
         app.get("/quiz/", new QuizHandler());
         app.get("/create_pack/", new CreatePackHandler(), AogRole.USER, AogRole.ADMIN);
+        app.get("/create_card/", new CreateCardHandler(pack_manager));
 
         app.post("/api/register/", new RegisterApiHandler(user_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/api/login/", new LoginApiHandler(user_manager));
         app.get("/api/logout/", new LogoutApiHandler());
         app.post("/api/create_pack/", new CreatePackApiHandler(pack_manager));
+        app.post("/api/create_card/", new CreateCardApiHandler(pack_manager, card_manager));
 
         app.start(4409);
     }

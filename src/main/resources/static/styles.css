@@ -64,7 +64,7 @@ body {
     align-items: center;
 }
 
-#card-container {
+.card-container {
     aspect-ratio: 4 / 3;
     width: 70%;
     perspective: 1000px;
@@ -204,7 +204,7 @@ body {
     margin: 10px;
 }
 
-.centre-content {
+.centre-content, .centre-space, .centre-wide {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -215,6 +215,22 @@ body {
     display: flex;
     justify-content: center;
     flex-direction: column;
+}
+
+.centre-space {
+    row-gap: 1rem;
+}
+
+.centre-wide {
+    width: 100%;
+}
+
+.arrange-across {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+    width: 100%;
 }
 
 .generic-container {
@@ -229,13 +245,54 @@ body {
     color: white;
 }
 
-.form label input {
+.form input, .form textarea {
     background-color: var(--aog-color);
     color: white;
     border-radius: 5px;
     padding: 5px;
     font-family: Verdana, sans-serif;
     border: 2px solid white;
+    width: 100%;
+}
+
+.form textarea {
+    height: 100%;
+    box-sizing: border-box;
+    resize: none;
+}
+
+.form-color label {
+    color: white;
+}
+
+.form-color label input {
+    color: white;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+.form-submit {
+    width: 100%;
+}
+
+.form-submit input {
+    background-color: #B3D8DC;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Verdana, sans-serif;
+    border: 2px solid white;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.form-submit input:hover {
+    background-color: #2973B2;
+}
+
+.form-checkbox input {
+    width: auto;
+    height: 1.5rem;
 }
 
 .form-error label input {

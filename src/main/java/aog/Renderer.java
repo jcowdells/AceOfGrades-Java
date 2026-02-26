@@ -18,4 +18,10 @@ public class Renderer {
         model.put("error", error_message);
         Renderer.render(context, "/templates/error.ftl", model);
     }
+
+    public static void renderHXError(@NotNull Context context, String error_message) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("error", error_message);
+        Renderer.render(context, "/common/forms/error.ftl", model);
+    }
 }
