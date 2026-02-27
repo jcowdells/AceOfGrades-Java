@@ -30,7 +30,7 @@ public class CreateCardForm implements BaseForm {
 
     @Override
     public boolean hasErrors() {
-        return false;
+        return front.hasErrors() || back.hasErrors() || front_color.hasErrors() || back_color.hasErrors();
     }
 
     public FormEntry<String> getFront() {

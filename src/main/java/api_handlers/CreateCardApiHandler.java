@@ -23,7 +23,7 @@ public class CreateCardApiHandler implements Handler {
         this.card_manager = card_manager;
     }
 
-    public static Pair<String, Integer> getPackID(PackManager pack_manager, String pack_id_str) throws SQLException {
+    public static Pair<String, Integer> getPackID(PackManager pack_manager, String pack_id_str, int user_id) throws SQLException {
         if (pack_id_str == null) {
             return new Pair<>("No pack id provided!", null);
         }
@@ -36,15 +36,22 @@ public class CreateCardApiHandler implements Handler {
         if (!pack_manager.hasPack(pack_id)) {
             return new Pair<>("Specified pack does not exist!", null);
         }
+        if (!pack_manager.isPackOwner(pack_id, user_id)) {
+            return new Pair<>("You are not the owner of this pack!", null);
+        }
         return new Pair<>(null, pack_id);
     }
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        final String pack_id_str = context.formParam("pack_id");
-        System.out.println(pack_id_str);
+        final Integer user_id = context.sessionAttribute("user_id");
+        if (user_id == null) {
+            Renderer.renderHXError(context, "Failed to get user id!");
+            return;
+        }
 
-        Pair<String, Integer> pack_id = getPackID(pack_manager, pack_id_str);
+        final String pack_id_str = context.formParam("pack_id");
+        Pair<String, Integer> pack_id = getPackID(pack_manager, pack_id_str, user_id);
         if (pack_id.getB() == null) {
             Renderer.renderHXError(context, pack_id.getA());
             return;
@@ -79,17 +86,17 @@ public class CreateCardApiHandler implements Handler {
             back_color = "";
         }
 
+        Map<String, Object> model = new HashMap<>();
+        model.put("pack_id", pack_id.getB());
+
         if (card_form.hasErrors()) {
-            Map<String, Object> model = new HashMap<>();
             model.put("form", card_form);
             context.render("/common/forms/create_card.ftl", model);
             return;
         }
 
         card_manager.createCard(pack_id.getB(), front, back, front_color, back_color);
-        Map<String, Object> model = new HashMap<>();
         model.put("form", new CreateCardForm(pack_colors.getA(), pack_colors.getB()));
-        model.put("pack_id", pack_id.getB());
         context.render("/common/forms/create_card.ftl", model);
     }
 }

@@ -56,4 +56,44 @@ public class PackManager {
             return result.next();
         }
     }
+
+    public String getPackName(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT name FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return null;
+            return result.getString(1);
+        }
+    }
+
+    public String getPackDescription(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT description FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return null;
+            return result.getString(1);
+        }
+    }
+
+    public boolean isPackOwner(int pack_id, int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT creator_id FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            int creator_id = result.getInt(1);
+            return creator_id == user_id;
+        }
+    }
 }

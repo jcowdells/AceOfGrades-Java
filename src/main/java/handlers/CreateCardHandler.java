@@ -21,7 +21,13 @@ public class CreateCardHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        Pair<String, Integer> pack_id = CreateCardApiHandler.getPackID(pack_manager, context.queryParam("pack"));
+        final Integer user_id = context.sessionAttribute("user_id");
+        if (user_id == null) {
+            Renderer.renderError(context, "Failed to get user id!");
+            return;
+        }
+
+        Pair<String, Integer> pack_id = CreateCardApiHandler.getPackID(pack_manager, context.queryParam("pack"), user_id);
         if (pack_id.getB() == null) {
             Renderer.renderError(context, pack_id.getA());
             return;
@@ -31,6 +37,10 @@ public class CreateCardHandler implements Handler {
         Map<String, Object> model = new HashMap<>();
         model.put("form", new CreateCardForm(pack_colors.getA(), pack_colors.getB()));
         model.put("pack_id", pack_id.getB());
+        String pack_name = pack_manager.getPackName(pack_id.getB());
+        String pack_description = pack_manager.getPackDescription(pack_id.getB());
+        model.put("pack_name", pack_name);
+        model.put("pack_description", pack_description);
         Renderer.render(context, "/templates/create_card.ftl", model);
     }
 

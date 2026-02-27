@@ -52,13 +52,13 @@ public class Main {
         app.get("/login/", new LoginHandler());
         app.get("/quiz/", new QuizHandler());
         app.get("/create_pack/", new CreatePackHandler(), AogRole.USER, AogRole.ADMIN);
-        app.get("/create_card/", new CreateCardHandler(pack_manager));
+        app.get("/create_card/", new CreateCardHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
 
-        app.post("/api/register/", new RegisterApiHandler(user_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/api/register/", new RegisterApiHandler(user_manager));
         app.post("/api/login/", new LoginApiHandler(user_manager));
         app.get("/api/logout/", new LogoutApiHandler());
-        app.post("/api/create_pack/", new CreatePackApiHandler(pack_manager));
-        app.post("/api/create_card/", new CreateCardApiHandler(pack_manager, card_manager));
+        app.post("/api/create_pack/", new CreatePackApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/api/create_card/", new CreateCardApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
 
         app.start(4409);
     }

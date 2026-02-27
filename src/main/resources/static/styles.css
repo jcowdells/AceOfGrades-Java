@@ -204,7 +204,7 @@ body {
     margin: 10px;
 }
 
-.centre-content, .centre-space, .centre-wide {
+.centre-content, .centre-space {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -222,6 +222,10 @@ body {
 }
 
 .centre-wide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     width: 100%;
 }
 
@@ -233,12 +237,38 @@ body {
     width: 100%;
 }
 
+.arrange-containers-across {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
 .generic-container {
     background-color: rgba(255, 255, 255, 0.25);
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
     width: 50%;
+    height: 100%;
+}
+
+.pack-display {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    width: 25%;
+    height: 100%;
+    color: white;
+}
+
+.pack-thumbnail {
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
 }
 
 .form label {

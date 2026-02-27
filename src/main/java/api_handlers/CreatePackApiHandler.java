@@ -24,6 +24,12 @@ public class CreatePackApiHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
+        final Integer user_id = context.sessionAttribute("user_id");
+        if (user_id == null) {
+            Renderer.renderHXError(context, "Failed to get user id!");
+            return;
+        }
+
         final String name = context.formParam("name");
         final String description = context.formParam("description");
         final String front_color = context.formParam("front_color");
@@ -60,11 +66,6 @@ public class CreatePackApiHandler implements Handler {
             return;
         }
 
-        final Integer user_id = context.sessionAttribute("user_id");
-        if (user_id == null) {
-            Renderer.renderError(context, "Failed to get user id.");
-            return;
-        }
         pack_manager.createPack(user_id, name, description, front_color, back_color, false);
         context.header("HX-Redirect", "/");
     }

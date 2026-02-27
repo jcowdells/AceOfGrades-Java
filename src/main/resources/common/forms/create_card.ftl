@@ -14,10 +14,10 @@
             </div>
             <div class="card-container form">
                 <div id="card-front">
-                    <textarea name="card_front">${form.getFront().input}</textarea>
+                    <textarea id="front" name="front">${form.getFront().input}</textarea>
                 </div>
                 <div id="card-back">
-                    <textarea name="card_back">${form.getBack().input}</textarea>
+                    <textarea id="back" name="back">${form.getBack().input}</textarea>
                 </div>
             </div>
         </div>
