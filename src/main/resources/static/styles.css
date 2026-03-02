@@ -64,7 +64,7 @@ body {
     align-items: center;
 }
 
-.card-container {
+#card-container {
     aspect-ratio: 4 / 3;
     width: 70%;
     perspective: 1000px;
@@ -336,4 +336,10 @@ body {
 .error-list li {
     color: red;
     font-size: 0.9rem;
+}
+
+.prevent-select {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

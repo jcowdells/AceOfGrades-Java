@@ -12,7 +12,7 @@
                     <input id="flip-button" type="button" value="Flip">
                 </div>
             </div>
-            <div class="card-container form">
+            <div id="card-container" class="form">
                 <div id="card-front">
                     <textarea id="front" name="front">${form.getFront().input}</textarea>
                 </div>
