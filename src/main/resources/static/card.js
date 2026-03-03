@@ -4,8 +4,10 @@ let editing = false;
 let clicked = false;
 let flipped = false;
 let switched = false;
+let transitioning = false;
 let side = "neither";
 let spin_fraction = 0;
+let click_pos = {"x": 0, "y": 0};
 
 function rectContainsPoint(rect, x, y) {
     if (x < rect.left) return false;
@@ -23,16 +25,82 @@ function onLoadQuiz() {
 
     // stack elements
     const stack_correct = document.getElementById("stack-correct");
-    const stack_incorrect = document.getElementById("stack_incorrect");
+    const stack_incorrect = document.getElementById("stack-incorrect");
 
     function transition(time) {
         card_front.style.transition = "all " + time + "s ease-in-out";
         card_back.style.transition = "all " + time + "s ease-in-out";
     }
 
+    function rotate() {
+        angle = spin_fraction * Math.PI;
+        card_front.style.transform = "rotateY(" + angle + "rad)";
+        card_back.style.transform = "rotateY(" + (angle + Math.PI) + "rad)";
+    }
+
+    function move(x, y) {
+        card_front.style.left = x + "px";
+        card_back.style.top = y + "px";
+        card_back.style.left = x + "px";
+        card_back.style.top = y + "px";
+    }
+
+    function resize(width, height) {
+        card_front.style.width = width + "px";
+        card_back.style.height = height + "px";
+        card_back.style.width = width + "px";
+        card_back.style.height = height + "px";
+    }
+
+    function setFontSize(font_size) {
+        card_front.style.fontSize = font_size + "rem";
+        card_back.style.fontSize = font_size + "rem";
+    }
+
+    function moveToStack(stack) {
+        transitioning = true;
+        transition(1);
+        const stack_rect = stack.getBoundingClientRect();
+        const card_rect = card_container.getBoundingClientRect();
+        move(stack_rect.left - card_rect.left, stack_rect.top - card_rect.top);
+        resize(stack_rect.width, stack_rect.height);
+        setFontSize(stack_rect.height / card_rect.height);
+
+        setTimeout(function() {
+            flipped = false;
+            switched = false;
+            transitioning = false;
+            spin_fraction = 0;
+            transition(0);
+            rotate();
+            move(0, 0);
+            const card_rect_2 = card_container.getBoundingClientRect();
+            resize(card_rect_2.width, card_rect_2.height);
+            setFontSize(1);
+            }, 1000);
+    }
+
+    stack_correct.addEventListener("click", function(event) {
+        if (switched) {
+            moveToStack(stack_correct);
+        }
+    });
+
+    stack_incorrect.addEventListener("click", function(event) {
+        if (switched) {
+            moveToStack(stack_incorrect);
+        }
+    });
+
     card_container.addEventListener("mousedown", function(event) {
+        if (transitioning) {
+            return;
+        }
+
         // update clicked status
         clicked = true;
+        click_pos.x = event.clientX;
+        click_pos.y = event.clientY;
 
         // decide which side of the card has been clicked (determines rotation direction)
         const rect = card_container.getBoundingClientRect();
@@ -46,12 +114,6 @@ function onLoadQuiz() {
         // make transitions be 0 seconds
         transition(0);
     });
-
-    function rotate() {
-        angle = spin_fraction * Math.PI;
-        card_front.style.transform = "rotateY(" + angle + "rad)";
-        card_back.style.transform = "rotateY(" + (angle + Math.PI) + "rad)";
-    }
 
     function repairSpin() {
         // if clicked, don't attempt to change anything.
@@ -70,12 +132,33 @@ function onLoadQuiz() {
         if (side === "neither") {
             return;
         }
+
+        // mark as not clicked.
+        clicked = false;
+        side = "neither";
+        const was_flipped = flipped;
+        flipped = false;
+
         // make transitions be 1 seconds
         transition(1);
 
-        if (flipped || rectContainsPoint(card_container.getBoundingClientRect(), event.clientX, event.clientY)) {
+        const rect = card_container.getBoundingClientRect();
+
+        // if the mouse is more than
+        if (switched && event.clientX - click_pos.x > (rect.right - rect.left) * 0.5) {
+            if (event.clientY - rect.top - (rect.bottom - rect.top) * 0.5 < 0) {
+                moveToStack(stack_correct);
+            } else {
+                moveToStack(stack_incorrect);
+            }
+            return;
+        }
+
+        if (was_flipped || rectContainsPoint(rect, event.clientX, event.clientY)) {
             switched = !switched;
         }
+
+        move(0, 0);
 
         if (switched) {
             if (spin_fraction > 0) {
@@ -97,10 +180,6 @@ function onLoadQuiz() {
         }
 
         rotate();
-
-        // mark as not clicked.
-        clicked = false;
-        side = "neither";
     }
 
     document.onmousemove = function(event) {
@@ -112,6 +191,13 @@ function onLoadQuiz() {
         // get midpoint
         const rect = card_container.getBoundingClientRect();
         const midpoint = (rect.left + rect.right) / 2;
+
+        if (switched) {
+            const x = event.clientX - click_pos.x;
+            const y = event.clientY - click_pos.y;
+            move(x, y);
+            return;
+        }
 
         const angle = Math.atan2(MOUSE_DISTANCE, midpoint - event.clientX);
         spin_fraction = angle / Math.PI;
