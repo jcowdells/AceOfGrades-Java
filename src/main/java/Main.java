@@ -59,6 +59,7 @@ public class Main {
         app.get("/api/logout/", new LogoutApiHandler());
         app.post("/api/create_pack/", new CreatePackApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/api/create_card/", new CreateCardApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/api/get_pack/", new GetPackApiHandler(pack_manager));
 
         app.start(4409);
     }

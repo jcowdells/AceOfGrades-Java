@@ -33,11 +33,8 @@ public class CreateCardApiHandler implements Handler {
         } catch (NumberFormatException e) {
             return new Pair<>("Pack ID must be an integer!", null);
         }
-        if (!pack_manager.hasPack(pack_id)) {
+        if (!pack_manager.hasPack(pack_id) || !pack_manager.isPackOwner(pack_id, user_id)) {
             return new Pair<>("Specified pack does not exist!", null);
-        }
-        if (!pack_manager.isPackOwner(pack_id, user_id)) {
-            return new Pair<>("You are not the owner of this pack!", null);
         }
         return new Pair<>(null, pack_id);
     }

@@ -27,6 +27,16 @@ function onLoadQuiz() {
     const stack_correct = document.getElementById("stack-correct");
     const stack_incorrect = document.getElementById("stack-incorrect");
 
+    fetch(
+      "/api/get_pack?pack=1", {
+          method: "POST"
+        }
+    ).then(
+        (response) => response.json()
+    ).then(
+        (json) => console.log(json)
+    );
+
     function transition(time) {
         card_front.style.transition = "all " + time + "s ease-in-out";
         card_back.style.transition = "all " + time + "s ease-in-out";
@@ -58,25 +68,42 @@ function onLoadQuiz() {
     }
 
     function moveToStack(stack) {
+        // update variables
         transitioning = true;
+        let stack_rect = stack.getBoundingClientRect();
+        let card_rect = card_container.getBoundingClientRect();
+        let font_size = stack_rect.height / card_rect.height;
+
+        // set card transition in motion
         transition(1);
-        const stack_rect = stack.getBoundingClientRect();
-        const card_rect = card_container.getBoundingClientRect();
         move(stack_rect.left - card_rect.left, stack_rect.top - card_rect.top);
         resize(stack_rect.width, stack_rect.height);
-        setFontSize(stack_rect.height / card_rect.height);
+        setFontSize(font_size);
 
+        // set stack styles
+        stack.style.border = "none";
+
+        // after transition is complete, reset the state
         setTimeout(function() {
+            // update variables
             flipped = false;
             switched = false;
             transitioning = false;
             spin_fraction = 0;
+            stack_rect = stack.getBoundingClientRect();
+            card_rect = card_container.getBoundingClientRect();
+
+            // reset card styles
             transition(0);
             rotate();
             move(0, 0);
-            const card_rect_2 = card_container.getBoundingClientRect();
-            resize(card_rect_2.width, card_rect_2.height);
+            resize(card_rect.width, card_rect.height);
             setFontSize(1);
+
+            // set stack styles
+            stack.replaceChildren(...card_back.cloneNode(true).childNodes);
+            stack.style.fontSize = font_size + "rem";
+            stack.style.background = card_back.style.background;
             }, 1000);
     }
 

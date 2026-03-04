@@ -4,6 +4,10 @@ import core.Pair;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PackManager {
     private final DataSource data_source;
@@ -13,7 +17,7 @@ public class PackManager {
         try (Connection connection = data_source.getConnection()) {
             Statement statement = connection.createStatement();
             statement.execute(
-                    "CREATE TABLE IF NOT EXISTS tblPack (id INTEGER PRIMARY KEY, creator_id INTEGER, name TEXT, description TEXT, front_color TEXT, back_color TEXT, is_public INTEGER, FOREIGN KEY(creator_id) REFERENCES tblUser(id));"
+                    "CREATE TABLE IF NOT EXISTS tblPack (id INTEGER PRIMARY KEY AUTOINCREMENT, creator_id INTEGER, name TEXT, description TEXT, front_color TEXT, back_color TEXT, is_public INTEGER, FOREIGN KEY(creator_id) REFERENCES tblUser(id));"
             );
         }
     }
@@ -94,6 +98,48 @@ public class PackManager {
                 return false;
             int creator_id = result.getInt(1);
             return creator_id == user_id;
+        }
+    }
+
+    public boolean canAccessPack(int pack_id, int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT creator_id, is_public FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            int creator_id = result.getInt(1);
+            int is_public = result.getInt(2);
+            if (is_public == 1) return true;
+            return creator_id == user_id;
+        }
+    }
+
+    public List<Map<String, Object>> getPackCards(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+
+            List<Map<String, Object>> card_list = new ArrayList<>();
+            while (result.next()) {
+                String front = result.getString(1);
+                String back = result.getString(2);
+                String front_color = result.getString(3);
+                String back_color = result.getString(4);
+
+                Map<String, Object> card_data = new HashMap<>();
+                card_data.put("front", front);
+                card_data.put("back", back);
+                card_data.put("front_color", front_color);
+                card_data.put("back_color", back_color);
+                card_list.add(card_data);
+            }
+            return card_list;
         }
     }
 }

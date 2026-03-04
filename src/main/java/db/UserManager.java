@@ -17,7 +17,7 @@ public class UserManager {
         try (Connection connection = data_source.getConnection()) {
             Statement statement = connection.createStatement();
             statement.execute(
-                    "CREATE TABLE IF NOT EXISTS tblUser (id INTEGER PRIMARY KEY, username TEXT UNIQUE, passwordHash TEXT, emailAddress TEXT, role TEXT);"
+                    "CREATE TABLE IF NOT EXISTS tblUser (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, passwordHash TEXT, emailAddress TEXT, role TEXT);"
             );
         }
     }
