@@ -1,4 +1,6 @@
-<div id="game-container">
+<div id="game-container"
+    data-pack-id="${pack_id}"
+>
     <div id="card-container">
         <div id="card-next">
             Next card

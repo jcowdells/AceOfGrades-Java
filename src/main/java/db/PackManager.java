@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PackManager {
+public class PackManager implements DBManager {
     private final DataSource data_source;
 
     public PackManager(DataSource data_source) throws SQLException {
@@ -19,6 +19,35 @@ public class PackManager {
             statement.execute(
                     "CREATE TABLE IF NOT EXISTS tblPack (id INTEGER PRIMARY KEY AUTOINCREMENT, creator_id INTEGER, name TEXT, description TEXT, front_color TEXT, back_color TEXT, is_public INTEGER, FOREIGN KEY(creator_id) REFERENCES tblUser(id));"
             );
+        }
+    }
+
+    @Override
+    public boolean hasID(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            return result.next();
+        }
+    }
+
+    @Override
+    public boolean canAccessID(int pack_id, int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT creator_id, is_public FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            int creator_id = result.getInt(1);
+            int is_public = result.getInt(2);
+            if (is_public == 1) return true;
+            return creator_id == user_id;
         }
     }
 
@@ -33,7 +62,7 @@ public class PackManager {
             p_statement.setString(4, front_color);
             p_statement.setString(5, back_color);
             p_statement.setInt(6, is_public ? 1 : 0);
-            p_statement.execute();
+            p_statement.executeUpdate();
         }
     }
 
@@ -50,16 +79,7 @@ public class PackManager {
         }
     }
 
-    public boolean hasPack(int pack_id) throws SQLException {
-        try (Connection connection = data_source.getConnection()) {
-            PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT 1 FROM tblPack WHERE id = ?"
-            );
-            p_statement.setInt(1, pack_id);
-            ResultSet result = p_statement.executeQuery();
-            return result.next();
-        }
-    }
+
 
     public String getPackName(int pack_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
@@ -97,22 +117,6 @@ public class PackManager {
             if (!result.next())
                 return false;
             int creator_id = result.getInt(1);
-            return creator_id == user_id;
-        }
-    }
-
-    public boolean canAccessPack(int pack_id, int user_id) throws SQLException {
-        try (Connection connection = data_source.getConnection()) {
-            PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT creator_id, is_public FROM tblPack WHERE id = ?"
-            );
-            p_statement.setInt(1, pack_id);
-            ResultSet result = p_statement.executeQuery();
-            if (!result.next())
-                return false;
-            int creator_id = result.getInt(1);
-            int is_public = result.getInt(2);
-            if (is_public == 1) return true;
             return creator_id == user_id;
         }
     }

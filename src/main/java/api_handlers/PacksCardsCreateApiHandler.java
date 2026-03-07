@@ -1,72 +1,57 @@
 package api_handlers;
 
 import aog.Renderer;
+import core.Identifier;
 import core.Pair;
 import db.CardManager;
 import db.PackManager;
-import forms.CreateCardForm;
+import forms.CardsCreateForm;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-public class CreateCardApiHandler implements Handler {
+public class PacksCardsCreateApiHandler implements Handler {
     private final PackManager pack_manager;
     private final CardManager card_manager;
 
-    public CreateCardApiHandler(PackManager pack_manager, CardManager card_manager) {
+    public PacksCardsCreateApiHandler(PackManager pack_manager, CardManager card_manager) {
         this.pack_manager = pack_manager;
         this.card_manager = card_manager;
     }
 
-    public static Pair<String, Integer> getPackID(PackManager pack_manager, String pack_id_str, int user_id) throws SQLException {
-        if (pack_id_str == null) {
-            return new Pair<>("No pack id provided!", null);
-        }
-        int pack_id;
-        try {
-            pack_id = Integer.parseInt(pack_id_str);
-        } catch (NumberFormatException e) {
-            return new Pair<>("Pack ID must be an integer!", null);
-        }
-        if (!pack_manager.hasPack(pack_id) || !pack_manager.isPackOwner(pack_id, user_id)) {
-            return new Pair<>("Specified pack does not exist!", null);
-        }
-        return new Pair<>(null, pack_id);
-    }
-
     @Override
     public void handle(@NotNull Context context) throws Exception {
+        // get user id
         final Integer user_id = context.sessionAttribute("user_id");
         if (user_id == null) {
             Renderer.renderHXError(context, "Failed to get user id!");
             return;
         }
 
-        final String pack_id_str = context.formParam("pack_id");
-        Pair<String, Integer> pack_id = getPackID(pack_manager, pack_id_str, user_id);
-        if (pack_id.getB() == null) {
-            Renderer.renderHXError(context, pack_id.getA());
+        // get pack id from url
+        Identifier pack_id = new Identifier(
+                context, pack_manager,
+                "pack_id", "pack",
+                user_id
+        );
+        if (pack_id.hasFailed()) {
+            Renderer.renderHXError(context, pack_id.getErrorMessage());
+            context.status(401);
             return;
         }
 
-        Pair<String, String> pack_colors = pack_manager.getPackColor(pack_id.getB());
+        // get pack colours
+        Pair<String, String> pack_colors = pack_manager.getPackColor(pack_id.getID());
 
         final String front = context.formParam("front");
         final String back = context.formParam("back");
         String front_color = context.formParam("front_color");
         String back_color = context.formParam("back_color");
 
-        System.out.println(front);
-        System.out.println(back);
-        System.out.println(front_color);
-        System.out.println(back_color);
-
-        CreateCardForm card_form = new CreateCardForm(front, back, front_color, back_color);
+        CardsCreateForm card_form = new CardsCreateForm(front, back, front_color, back_color);
 
         if (front == null || front.isEmpty()) {
             card_form.getFront().addError("Front cannot be empty!");
@@ -83,8 +68,9 @@ public class CreateCardApiHandler implements Handler {
             back_color = "";
         }
 
+        // put pack id into model, allows api endpoint to be generated
         Map<String, Object> model = new HashMap<>();
-        model.put("pack_id", pack_id.getB());
+        model.put("pack_id", pack_id.getID());
 
         if (card_form.hasErrors()) {
             model.put("form", card_form);
@@ -92,8 +78,8 @@ public class CreateCardApiHandler implements Handler {
             return;
         }
 
-        card_manager.createCard(pack_id.getB(), front, back, front_color, back_color);
-        model.put("form", new CreateCardForm(pack_colors.getA(), pack_colors.getB()));
+        card_manager.createCard(pack_id.getID(), front, back, front_color, back_color);
+        model.put("form", new CardsCreateForm(pack_colors.getA(), pack_colors.getB()));
         context.render("/common/forms/create_card.ftl", model);
     }
 }

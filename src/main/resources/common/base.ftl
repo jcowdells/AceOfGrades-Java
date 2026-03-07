@@ -45,7 +45,9 @@
                 <a href="">${user.username}</a>
             </li>
             <li style="right: 0; position: absolute">
-                <a href="/api/logout">Log Out</a>
+                <form action="/forms/logout" method="POST">
+                    <button>Log Out</button>
+                </form>
             </li>
         </#if>
     </ul>

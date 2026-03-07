@@ -1,7 +1,7 @@
 <#include "/common/forms/form_entry.ftl">
 <#include "/common/forms/form_color.ftl">
 <#include "/common/forms/form_submit.ftl">
-<form hx-post="/api/create_card" hx-target="this" hx-swap="outerHTML">
+<form hx-post="/forms/packs/${pack_id}/cards/create" hx-target="this" hx-swap="outerHTML">
     <input type="hidden" name="pack_id" value="${pack_id}">
     <div class="centre-space">
         <div class="arrange-across">

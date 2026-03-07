@@ -3,7 +3,7 @@ package db;
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class CardManager {
+public class CardManager implements DBManager {
     private final DataSource data_source;
 
     public CardManager(DataSource data_source) throws SQLException {
@@ -19,6 +19,35 @@ public class CardManager {
             statement.execute(
                     "CREATE TABLE IF NOT EXISTS tblCardLink (card_id INTEGER, pack_id INTEGER, PRIMARY KEY(card_id, pack_id), FOREIGN KEY (card_id) REFERENCES tblCard(id), FOREIGN KEY (pack_id) REFERENCES tblPack(id));"
             );
+        }
+    }
+
+    @Override
+    public boolean hasID(int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblCard WHERE id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            ResultSet result = p_statement.executeQuery();
+            return result.next();
+        }
+    }
+
+    @Override
+    public boolean canAccessID(int card_id, int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblPack.creator_id, tblPack.is_public FROM tblPack INNER JOIN tblCard ON tblPack.id = tblCard.pack_id WHERE tblCard.id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            int creator_id = result.getInt(1);
+            int is_public = result.getInt(2);
+            if (is_public == 1) return true;
+            return creator_id == user_id;
         }
     }
 

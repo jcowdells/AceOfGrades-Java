@@ -17,7 +17,9 @@ function rectContainsPoint(rect, x, y) {
     return true;
 }
 
-function onLoadQuiz() {
+function onLoadQuiz(cards_data) {
+    console.log(cards_data);
+
     // card elements
     const card_container = document.getElementById("card-container");
     const card_front = document.getElementById("card-front");
@@ -26,16 +28,6 @@ function onLoadQuiz() {
     // stack elements
     const stack_correct = document.getElementById("stack-correct");
     const stack_incorrect = document.getElementById("stack-incorrect");
-
-    fetch(
-      "/api/get_pack?pack=1", {
-          method: "POST"
-        }
-    ).then(
-        (response) => response.json()
-    ).then(
-        (json) => console.log(json)
-    );
 
     function transition(time) {
         card_front.style.transition = "all " + time + "s ease-in-out";
@@ -263,9 +255,32 @@ function onLoadEditor() {
 }
 
 document.body.addEventListener("htmx:load", function(event) {
+    const params_string = window.location.search;
+    const params = new URLSearchParams(params_string);
+    const pack = params.get("pack")
     if (editing) {
         onLoadEditor();
     } else {
-        onLoadQuiz();
+        fetch(
+            `/api/get_pack?pack=${pack}`, {
+                method: "POST"
+            }
+        ).then(
+            response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return Promise.reject(response);
+            }
+        ).then(
+            json => onLoadQuiz(json)
+        ).catch(error => {
+            error.text().then(
+                text => {
+                    const content = document.getElementById("content");
+                    content.innerHTML = text;
+                }
+            );
+        });
     }
 });

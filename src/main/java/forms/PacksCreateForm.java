@@ -1,6 +1,6 @@
 package forms;
 
-public class CreatePackForm implements BaseForm {
+public class PacksCreateForm implements BaseForm {
 
     private final FormEntry<String> name;
     private final FormEntry<String> description;
@@ -8,7 +8,7 @@ public class CreatePackForm implements BaseForm {
     private final FormEntry<String> back_color;
     private final FormEntry<Boolean> is_public;
 
-    public CreatePackForm() {
+    public PacksCreateForm() {
         name = new FormEntry<>("");
         description = new FormEntry<>("");
         front_color = new FormEntry<>("#FFFFFF");
@@ -16,7 +16,7 @@ public class CreatePackForm implements BaseForm {
         is_public = new FormEntry<>(false);
     }
 
-    public CreatePackForm(String name, String description, String front_color, String back_color, boolean is_public) {
+    public PacksCreateForm(String name, String description, String front_color, String back_color, boolean is_public) {
         this.name = new FormEntry<>(name);
         this.description = new FormEntry<>(description);
         this.front_color = new FormEntry<>(front_color);

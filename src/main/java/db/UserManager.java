@@ -9,7 +9,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.sql.DataSource;
 
-public class UserManager {
+public class UserManager implements DBManager {
     private final DataSource data_source;
 
     public UserManager(DataSource data_source) throws SQLException {
@@ -20,6 +20,23 @@ public class UserManager {
                     "CREATE TABLE IF NOT EXISTS tblUser (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, passwordHash TEXT, emailAddress TEXT, role TEXT);"
             );
         }
+    }
+
+    @Override
+    public boolean hasID(int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblUser WHERE id = ?"
+            );
+            p_statement.setInt(1, user_id);
+            ResultSet result = p_statement.executeQuery();
+            return result.next();
+        }
+    }
+
+    @Override
+    public boolean canAccessID(int id, int user_id) {
+        return id == user_id;
     }
 
     public boolean hasUser(String username) throws SQLException {

@@ -1,27 +1,27 @@
 package forms;
 
-public class CreateCardForm implements BaseForm {
+public class CardsCreateForm implements BaseForm {
 
     private final FormEntry<String> front;
     private final FormEntry<String> back;
     private final FormEntry<String> front_color;
     private final FormEntry<String> back_color;
 
-    public CreateCardForm() {
+    public CardsCreateForm() {
         front = new FormEntry<>("");
         back = new FormEntry<>("");
         front_color = new FormEntry<>("");
         back_color = new FormEntry<>("");
     }
 
-    public CreateCardForm(String front_color, String back_color) {
+    public CardsCreateForm(String front_color, String back_color) {
         front = new FormEntry<>("");
         back = new FormEntry<>("");
         this.front_color = new FormEntry<>(front_color);
         this.back_color = new FormEntry<>(back_color);
     }
 
-    public CreateCardForm(String front, String back, String front_color, String back_color) {
+    public CardsCreateForm(String front, String back, String front_color, String back_color) {
         this.front = new FormEntry<>(front);
         this.back = new FormEntry<>(back);
         this.front_color = new FormEntry<>(front_color);

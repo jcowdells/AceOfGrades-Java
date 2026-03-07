@@ -44,22 +44,29 @@ public class Main {
             });
         });
 
-        app.beforeMatched(new AogAccessHandler());
+        // javalin
+        app.beforeMatched(new AogAccessHandler(user_manager));
         app.before(new BaseHandler(user_manager));
 
+        // all html shenanigans
+        // pages
         app.get("/", new IndexHandler());
         app.get("/register/", new RegisterHandler());
         app.get("/login/", new LoginHandler());
-        app.get("/quiz/", new QuizHandler());
-        app.get("/create_pack/", new CreatePackHandler(), AogRole.USER, AogRole.ADMIN);
-        app.get("/create_card/", new CreateCardHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/create/", new PacksCreateHandler(), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/cards/create/", new PacksCardsCreateHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/quiz/", new PacksQuizHandler(pack_manager));
 
-        app.post("/api/register/", new RegisterApiHandler(user_manager));
-        app.post("/api/login/", new LoginApiHandler(user_manager));
-        app.get("/api/logout/", new LogoutApiHandler());
-        app.post("/api/create_pack/", new CreatePackApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
-        app.post("/api/create_card/", new CreateCardApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
-        app.post("/api/get_pack/", new GetPackApiHandler(pack_manager));
+        // all api shenanigans
+        // forms
+        app.post("/forms/register/", new RegisterApiHandler(user_manager));
+        app.post("/forms/login/", new LoginApiHandler(user_manager));
+        app.post("/forms/logout/", new LogoutApiHandler());
+        app.post("/forms/packs/create/", new PacksCreateApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/forms/packs/{pack_id}/cards/create/", new PacksCardsCreateApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
+
+        // api, javascript/json focused
+        app.get("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager));
 
         app.start(4409);
     }
