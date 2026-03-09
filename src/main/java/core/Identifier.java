@@ -12,12 +12,24 @@ public class Identifier {
     private final String error_message;
     private final boolean failed;
 
+    public static String noIDMessage(String resource_name) {
+        return "No " + resource_name + " ID provided!";
+    }
+
+    public static String notIntegerMessage(String resource_name) {
+        return "The " + resource_name + " ID must be an integer!";
+    }
+
+    public static String resourceDoesNotExistMessage(String resource_name) {
+        return "Specified " + resource_name + " does not exist!";
+    }
+
     public Identifier(@NotNull Context context, DBManager db_manager, String param_name, String resource_name, int user_id) {
         String identifier = context.pathParam(param_name);
 
         // firstly, make sure that the identifier exists
         if (identifier == null) {
-            error_message = "No " + resource_name + " ID provided!";
+            error_message = Identifier.noIDMessage(resource_name);
             id = -1;
             failed = true;
             return;
@@ -28,7 +40,7 @@ public class Identifier {
         try {
             tmp_id = Integer.parseInt(identifier);
         } catch (NumberFormatException e) {
-            error_message = "The " + resource_name + " ID must be an integer!";
+            error_message = Identifier.notIntegerMessage(resource_name);
             id = -1;
             failed = true;
             return;
@@ -42,7 +54,7 @@ public class Identifier {
             exists = false;
         }
         if (!exists) {
-            error_message = "Specified " + resource_name + " does not exist!";
+            error_message = Identifier.resourceDoesNotExistMessage(resource_name);
             id = -1;
             failed = true;
             return;

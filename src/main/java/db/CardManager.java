@@ -1,5 +1,8 @@
 package db;
 
+import aog.Card;
+import core.Pair;
+
 import javax.sql.DataSource;
 import java.sql.*;
 
@@ -51,6 +54,33 @@ public class CardManager implements DBManager {
         }
     }
 
+    public Integer getPackID(int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT pack_id FROM tblCard WHERE id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            p_statement.executeQuery();
+            ResultSet result = p_statement.getResultSet();
+            if (!result.next())
+                return null;
+            return result.getInt(1);
+        }
+    }
+
+    public boolean canEditCard(int card_id, int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblPack.creator_id FROM tblPack INNER JOIN tblCard ON tblPack.id = tblCard.pack_id WHERE tblCard.id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            return result.getInt(1) == user_id;
+        }
+    }
+
     public void createCard(int pack_id, String front, String back, String front_color, String back_color) throws SQLException {
         int card_id = -1;
         try (Connection connection = data_source.getConnection()) {
@@ -77,6 +107,56 @@ public class CardManager implements DBManager {
             p_statement.setInt(1, card_id);
             p_statement.setInt(2, pack_id);
             p_statement.executeUpdate();
+        }
+    }
+
+    private Pair<String, String> getPackColor(int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblPack.front_color, tblPack.back_color FROM tblPack INNER JOIN tblCard ON tblPack.id = tblCard.pack_id WHERE tblCard.id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            p_statement.executeQuery();
+            ResultSet result = p_statement.getResultSet();
+            if (!result.next())
+                return null;
+            String front_color = result.getString(1);
+            String back_color = result.getString(2);
+            return new Pair<>(front_color, back_color);
+        }
+    }
+
+    public Card getCard(int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            // attempt to get card data
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT front, back, front_color, back_color FROM tblCard WHERE id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            p_statement.executeQuery();
+            ResultSet result = p_statement.getResultSet();
+            if (!result.next())
+                return null;
+            String front = result.getString(1);
+            String back = result.getString(2);
+            String front_color = result.getString(3);
+            String back_color = result.getString(4);
+
+            // check if card colour is not set, if so get the pack colour
+            boolean front_empty = front_color == null || front.isEmpty();
+            boolean back_empty = back_color == null || back_color.isEmpty();
+
+            if (front_empty || back_empty) {
+                Pair<String, String> pack_color = getPackColor(card_id);
+                if (pack_color == null)
+                    return null;
+                if (front_empty)
+                    front_color = pack_color.getA();
+                if (back_empty)
+                    back_color = pack_color.getB();
+            }
+
+            return new Card(front, back, front_color, back_color);
         }
     }
 }

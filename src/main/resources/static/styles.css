@@ -334,6 +334,21 @@ body {
     background-color: #2973B2;
 }
 
+.form-button {
+    background-color: #B3D8DC;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Verdana, sans-serif;
+    border: 2px solid white;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.form-button:hover {
+    background-color: #2973B2;
+}
+
 .form-checkbox input {
     width: auto;
     height: 1.5rem;

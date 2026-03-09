@@ -236,18 +236,6 @@ function onLoadQuiz(cards_data) {
             flipped = false;
         }
     }
-
-    stack_correct.addEventListener("mouseup", function(event) {
-        if (flipped) {
-
-        }
-    });
-
-    stack_incorrect.addEventListener("mousedown", function(event) {
-        if (flipped) {
-
-        }
-    });
 }
 
 function onLoadEditor() {
@@ -262,7 +250,7 @@ document.body.addEventListener("htmx:load", function(event) {
         onLoadEditor();
     } else {
         fetch(
-            `/api/get_pack?pack=${pack}`, {
+            `/api/packs/1/cards/`, {
                 method: "POST"
             }
         ).then(

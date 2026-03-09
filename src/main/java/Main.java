@@ -64,9 +64,11 @@ public class Main {
         app.post("/forms/logout/", new LogoutApiHandler());
         app.post("/forms/packs/create/", new PacksCreateApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/cards/create/", new PacksCardsCreateApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
+        app.get("/forms/cards/{card_id}/edit/", new CardsEditFragmentHandler(card_manager));
+        app.post("/forms/cards/{card_id}/edit/", new CardsEditApiHandler(card_manager));
 
         // api, javascript/json focused
-        app.get("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager));
+        app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager));
 
         app.start(4409);
     }
