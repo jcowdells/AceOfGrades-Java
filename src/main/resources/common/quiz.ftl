@@ -10,12 +10,8 @@
                 Next card
             </div>
             <div id="card">
-                <div id="card-front" class="prevent-select" style="background: white">
-                    legendmixer FRONT
-                </div>
-                <div id="card-back" class="prevent-select" style="background: white">
-                    legendmixer BACK
-                </div>
+                <div id="card-front" class="prevent-select" style="background: white"></div>
+                <div id="card-back" class="prevent-select" style="background: white"></div>
             </div>
         </div>
         <div id="stack-container">

@@ -1,5 +1,6 @@
 package db;
 
+import aog.Card;
 import core.Pair;
 
 import javax.sql.DataSource;
@@ -121,27 +122,34 @@ public class PackManager implements DBManager {
         }
     }
 
-    public List<Map<String, Object>> getPackCards(int pack_id) throws SQLException {
+    public List<Card> getPackCards(int pack_id) throws SQLException {
+        Pair<String, String> pack_color = getPackColor(pack_id);
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
+                    "SELECT tblCard.id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
             );
             p_statement.setInt(1, pack_id);
             ResultSet result = p_statement.executeQuery();
 
-            List<Map<String, Object>> card_list = new ArrayList<>();
+            List<Card> card_list = new ArrayList<>();
             while (result.next()) {
-                String front = result.getString(1);
-                String back = result.getString(2);
-                String front_color = result.getString(3);
-                String back_color = result.getString(4);
+                int card_id = result.getInt(1);
+                String front = result.getString(2);
+                String back = result.getString(3);
+                String front_color = result.getString(4);
+                String back_color = result.getString(5);
 
-                Map<String, Object> card_data = new HashMap<>();
-                card_data.put("front", front);
-                card_data.put("back", back);
-                card_data.put("front_color", front_color);
-                card_data.put("back_color", back_color);
-                card_list.add(card_data);
+                if (front_color == null || front_color.isEmpty())
+                    front_color = pack_color.getA();
+
+                if (back_color == null || back_color.isEmpty())
+                    back_color = pack_color.getB();
+
+                card_list.add(new Card(
+                        card_id,
+                        front, back,
+                        front_color, back_color
+                ));
             }
             return card_list;
         }

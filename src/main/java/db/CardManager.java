@@ -156,7 +156,7 @@ public class CardManager implements DBManager {
                     back_color = pack_color.getB();
             }
 
-            return new Card(front, back, front_color, back_color);
+            return new Card(card_id, front, back, front_color, back_color);
         }
     }
 }

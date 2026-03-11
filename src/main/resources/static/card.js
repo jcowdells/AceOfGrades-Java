@@ -8,6 +8,7 @@ let transitioning = false;
 let side = "neither";
 let spin_fraction = 0;
 let click_pos = {"x": 0, "y": 0};
+let card_index = 0;
 
 function rectContainsPoint(rect, x, y) {
     if (x < rect.left) return false;
@@ -18,12 +19,15 @@ function rectContainsPoint(rect, x, y) {
 }
 
 function onLoadQuiz(cards_data) {
-    console.log(cards_data);
+    // extract cards data
+    const num_cards = cards_data["num_cards"];
+    const cards = cards_data["cards"]
 
     // card elements
     const card_container = document.getElementById("card-container");
     const card_front = document.getElementById("card-front");
     const card_back = document.getElementById("card-back");
+    const card_next = document.getElementById("card-next");
 
     // stack elements
     const stack_correct = document.getElementById("stack-correct");
@@ -57,6 +61,23 @@ function onLoadQuiz(cards_data) {
     function setFontSize(font_size) {
         card_front.style.fontSize = font_size + "rem";
         card_back.style.fontSize = font_size + "rem";
+    }
+
+    function switchToNextCard() {
+        ++card_index;
+        if (card_index >= num_cards) {
+            // do something to signal the end
+            return;
+        }
+        const card = cards[card_index];
+        card_front.innerHTML = card["front"];
+        card_back.innerHTML = card["back"];
+        if (card_index + 1 < num_cards) {
+            // can set the next card
+            card_next.innerHTML = cards[card_index + 1]["front"];
+        } else {
+            // do something else
+        }
     }
 
     function moveToStack(stack) {
@@ -96,6 +117,8 @@ function onLoadQuiz(cards_data) {
             stack.replaceChildren(...card_back.cloneNode(true).childNodes);
             stack.style.fontSize = font_size + "rem";
             stack.style.background = card_back.style.background;
+
+            switchToNextCard();
             }, 1000);
     }
 
@@ -236,6 +259,9 @@ function onLoadQuiz(cards_data) {
             flipped = false;
         }
     }
+
+    card_index = -1;
+    switchToNextCard();
 }
 
 function onLoadEditor() {
@@ -243,14 +269,12 @@ function onLoadEditor() {
 }
 
 document.body.addEventListener("htmx:load", function(event) {
-    const params_string = window.location.search;
-    const params = new URLSearchParams(params_string);
-    const pack = params.get("pack")
+    const pack_id = document.getElementById("game-container").getAttribute("data-pack-id");
     if (editing) {
         onLoadEditor();
     } else {
         fetch(
-            `/api/packs/1/cards/`, {
+            `/api/packs/${pack_id}/cards/`, {
                 method: "POST"
             }
         ).then(

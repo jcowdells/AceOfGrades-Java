@@ -33,7 +33,7 @@
             </li>
         <#elseif user.role == "USER" || user.role == "ADMIN">
             <li>
-                <a href="">Packs</a>
+                <a href="/packs/1/quiz">Packs</a>
             </li>
             <li>
                 <a href="">View Cards</a>

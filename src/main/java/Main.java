@@ -1,3 +1,4 @@
+import aog.MarkdownHTML;
 import api_handlers.*;
 import auth.AogAccessHandler;
 import auth.AogRole;
@@ -24,6 +25,7 @@ public class Main {
         UserManager user_manager = new UserManager(data_source);
         PackManager pack_manager = new PackManager(data_source);
         CardManager card_manager = new CardManager(data_source);
+        MarkdownHTML md_parser = new MarkdownHTML();
 
         // create da app
         Javalin app = Javalin.create(config -> {
@@ -68,7 +70,7 @@ public class Main {
         app.post("/forms/cards/{card_id}/edit/", new CardsEditApiHandler(card_manager));
 
         // api, javascript/json focused
-        app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager));
+        app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager, md_parser));
 
         app.start(4409);
     }
