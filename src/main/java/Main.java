@@ -56,6 +56,9 @@ public class Main {
         app.get("/register/", new RegisterHandler());
         app.get("/login/", new LoginHandler());
         app.get("/packs/create/", new PacksCreateHandler(), AogRole.USER, AogRole.ADMIN);
+        app.get("/explore/", new ExploreHandler(pack_manager));
+        app.get("/packs/", new PacksHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/view/", new PacksViewHandler(pack_manager));
         app.get("/packs/{pack_id}/cards/create/", new PacksCardsCreateHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/quiz/", new PacksQuizHandler(pack_manager));
 

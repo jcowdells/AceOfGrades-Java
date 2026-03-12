@@ -26,6 +26,9 @@
         </#if>
         <#if user.role == "ANYONE">
             <li>
+                <a href="/explore">Explore</a>
+            </li>
+            <li>
                 <a href="/register">Register</a>
             </li>
             <li>
@@ -33,13 +36,10 @@
             </li>
         <#elseif user.role == "USER" || user.role == "ADMIN">
             <li>
-                <a href="/packs/1/quiz">Packs</a>
+                <a href="/packs/">Packs</a>
             </li>
             <li>
-                <a href="">View Cards</a>
-            </li>
-            <li>
-                <a href="">Editor</a>
+                <a href="/explore">Explore</a>
             </li>
             <li>
                 <a href="">${user.username}</a>

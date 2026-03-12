@@ -60,8 +60,7 @@ public class CardManager implements DBManager {
                     "SELECT pack_id FROM tblCard WHERE id = ?"
             );
             p_statement.setInt(1, card_id);
-            p_statement.executeQuery();
-            ResultSet result = p_statement.getResultSet();
+            ResultSet result = p_statement.executeQuery();
             if (!result.next())
                 return null;
             return result.getInt(1);
@@ -82,7 +81,7 @@ public class CardManager implements DBManager {
     }
 
     public void createCard(int pack_id, String front, String back, String front_color, String back_color) throws SQLException {
-        int card_id = -1;
+        int card_id;
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "INSERT INTO tblCard(pack_id, front, back, front_color, back_color) VALUES(?, ?, ?, ?, ?);",
@@ -99,7 +98,6 @@ public class CardManager implements DBManager {
                 return;
             card_id = result.getInt(1);
         }
-        if (card_id == -1) return;
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "INSERT INTO tblCardLink(card_id, pack_id) VALUES(?, ?);"
@@ -116,8 +114,7 @@ public class CardManager implements DBManager {
                     "SELECT tblPack.front_color, tblPack.back_color FROM tblPack INNER JOIN tblCard ON tblPack.id = tblCard.pack_id WHERE tblCard.id = ?"
             );
             p_statement.setInt(1, card_id);
-            p_statement.executeQuery();
-            ResultSet result = p_statement.getResultSet();
+            ResultSet result = p_statement.executeQuery();
             if (!result.next())
                 return null;
             String front_color = result.getString(1);
@@ -133,8 +130,7 @@ public class CardManager implements DBManager {
                     "SELECT front, back, front_color, back_color FROM tblCard WHERE id = ?"
             );
             p_statement.setInt(1, card_id);
-            p_statement.executeQuery();
-            ResultSet result = p_statement.getResultSet();
+            ResultSet result = p_statement.executeQuery();
             if (!result.next())
                 return null;
             String front = result.getString(1);

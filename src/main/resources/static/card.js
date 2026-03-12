@@ -36,6 +36,7 @@ function onLoadQuiz(cards_data) {
     function transition(time) {
         card_front.style.transition = "all " + time + "s ease-in-out";
         card_back.style.transition = "all " + time + "s ease-in-out";
+        card_next.style.transition = "all " + time + "s ease-in-out";
     }
 
     function rotate() {
@@ -58,6 +59,19 @@ function onLoadQuiz(cards_data) {
         card_back.style.height = height + "px";
     }
 
+    function resetSize() {
+        card_front.style.width = "100%";
+        card_front.style.height = "100%";
+        card_back.style.width = "100%";
+        card_back.style.height = "100%";
+    }
+
+    function resizeNext(percent) {
+        card_next.style.width = percent + "%";
+        card_next.style.height = percent + "%";
+        card_next.style.fontSize = (percent / 100) + "rem";
+    }
+
     function setFontSize(font_size) {
         card_front.style.fontSize = font_size + "rem";
         card_back.style.fontSize = font_size + "rem";
@@ -66,21 +80,28 @@ function onLoadQuiz(cards_data) {
     function switchToNextCard() {
         ++card_index;
         if (card_index >= num_cards) {
-            // do something to signal the end
+            card_front.remove();
+            card_back.remove();
             return;
         }
         const card = cards[card_index];
         card_front.innerHTML = card["front"];
         card_back.innerHTML = card["back"];
+        card_front.style.background = card["front_color"];
+        card_back.style.background = card["back_color"];
         if (card_index + 1 < num_cards) {
-            // can set the next card
             card_next.innerHTML = cards[card_index + 1]["front"];
+            card_next.style.background = cards[card_index + 1]["front_color"];
         } else {
-            // do something else
+            card_next.remove();
+            // TODO: message to say pack complete?
         }
     }
 
     function moveToStack(stack) {
+        if (card_index >= num_cards)
+            return;
+
         // update variables
         transitioning = true;
         let stack_rect = stack.getBoundingClientRect();
@@ -91,6 +112,7 @@ function onLoadQuiz(cards_data) {
         transition(1);
         move(stack_rect.left - card_rect.left, stack_rect.top - card_rect.top);
         resize(stack_rect.width, stack_rect.height);
+        resizeNext(100);
         setFontSize(font_size);
 
         // set stack styles
@@ -110,13 +132,15 @@ function onLoadQuiz(cards_data) {
             transition(0);
             rotate();
             move(0, 0);
-            resize(card_rect.width, card_rect.height);
+            resetSize();
             setFontSize(1);
 
             // set stack styles
             stack.replaceChildren(...card_back.cloneNode(true).childNodes);
             stack.style.fontSize = font_size + "rem";
             stack.style.background = card_back.style.background;
+
+            resizeNext(80);
 
             switchToNextCard();
             }, 1000);

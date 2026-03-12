@@ -147,7 +147,7 @@ body {
     border: 1px solid #000000;
 }
 
-#packs-container {
+.packs-container {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
@@ -158,14 +158,14 @@ body {
     border-radius: 10px;
 }
 
-#packs-container a {
+.packs-container a {
     text-decoration: none;
     color: #000000;
     transition: 0.2s;
     font-size: 1.3rem;
 }
 
-#packs-container a:hover {
+.packs-container a:hover {
     color: #8ABDFF;
 }
 

@@ -64,7 +64,7 @@ public class PacksCreateApiHandler implements Handler {
             return;
         }
 
-        pack_manager.createPack(user_id, name, description, front_color, back_color, false);
+        pack_manager.createPack(user_id, name, description, front_color, back_color, is_public);
         context.header("HX-Redirect", "/");
     }
 }
