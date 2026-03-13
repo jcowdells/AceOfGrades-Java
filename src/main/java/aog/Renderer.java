@@ -1,5 +1,6 @@
 package aog;
 
+import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,5 +24,14 @@ public class Renderer {
         Map<String, Object> model = new HashMap<>();
         model.put("error", error_message);
         Renderer.render(context, "/common/forms/error.ftl", model);
+    }
+
+    public static void renderJsonError(@NotNull Context context, int status, String error, String reason) {
+        context.status(status);
+        context.contentType(ContentType.JSON);
+        Map<String, String> error_json = new HashMap<>();
+        error_json.put("error", error);
+        error_json.put("reason", reason);
+        context.json(error_json);
     }
 }

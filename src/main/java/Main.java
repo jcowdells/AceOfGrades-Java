@@ -1,3 +1,4 @@
+import aog.JsonString;
 import aog.MarkdownHTML;
 import api_handlers.*;
 import auth.AogAccessHandler;
@@ -26,6 +27,7 @@ public class Main {
         PackManager pack_manager = new PackManager(data_source);
         CardManager card_manager = new CardManager(data_source);
         MarkdownHTML md_parser = new MarkdownHTML();
+        JsonString json_string = new JsonString();
 
         // create da app
         Javalin app = Javalin.create(config -> {
@@ -74,6 +76,7 @@ public class Main {
 
         // api, javascript/json focused
         app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager, md_parser));
+        app.post("/packs/{pack_id}/quiz/complete", new PacksQuizCompleteApiHandler(card_manager, json_string));
 
         app.start(4409);
     }

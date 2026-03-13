@@ -23,6 +23,12 @@ public class CardManager implements DBManager {
                     "CREATE TABLE IF NOT EXISTS tblCardLink (card_id INTEGER, pack_id INTEGER, PRIMARY KEY(card_id, pack_id), FOREIGN KEY (card_id) REFERENCES tblCard(id), FOREIGN KEY (pack_id) REFERENCES tblPack(id));"
             );
         }
+        try (Connection connection = data_source.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS tblCardStats (card_id INTEGER, user_id INTEGER, attempts INTEGER, correct INTEGER, PRIMARY KEY(card_id, user_id), FOREIGN KEY (card_id) REFERENCES tblCard(id), FOREIGN KEY (user_id) REFERENCES tblUser(id));"
+            );
+        }
     }
 
     @Override
@@ -153,6 +159,44 @@ public class CardManager implements DBManager {
             }
 
             return new Card(card_id, front, back, front_color, back_color);
+        }
+    }
+
+    public boolean hasAttemptedCard(int user_id, int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblCardStats WHERE card_id = ? AND user_id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            p_statement.setInt(2, user_id);
+            ResultSet result = p_statement.executeQuery();
+            return result.next();
+        }
+    }
+
+    public void updateCardStats(int card_id, int user_id, int attempts, int correct) throws SQLException {
+        if (!hasAttemptedCard(user_id, card_id)) {
+            try (Connection connection = data_source.getConnection()) {
+                PreparedStatement p_statement = connection.prepareStatement(
+                        "INSERT INTO tblCardStats (card_id, user_id, attempts, correct) VALUES (?, ?, ?, ?)"
+                );
+                p_statement.setInt(1, card_id);
+                p_statement.setInt(2, user_id);
+                p_statement.setInt(3, attempts);
+                p_statement.setInt(4, correct);
+                p_statement.executeUpdate();
+            }
+        } else {
+            try (Connection connection = data_source.getConnection()) {
+                PreparedStatement p_statement = connection.prepareStatement(
+                        "UPDATE tblCardStats SET attempts = attempts + ?, correct = correct + ? WHERE card_id = ? AND user_id = ?"
+                );
+                p_statement.setInt(1, attempts);
+                p_statement.setInt(2, correct);
+                p_statement.setInt(3, card_id);
+                p_statement.setInt(4, user_id);
+                p_statement.executeUpdate();
+            }
         }
     }
 }
