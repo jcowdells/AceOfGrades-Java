@@ -1,15 +1,14 @@
 package db;
 
 import aog.Card;
+import aog.CardThumbnail;
 import aog.Pack;
 import core.Pair;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PackManager implements DBManager {
     private final DataSource data_source;
@@ -127,7 +126,7 @@ public class PackManager implements DBManager {
         }
     }
 
-    public boolean isPackOwner(int pack_id, int user_id) throws SQLException {
+    public boolean isPackCreator(int pack_id, int user_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT creator_id FROM tblPack WHERE id = ?"
@@ -221,6 +220,40 @@ public class PackManager implements DBManager {
             );
             ResultSet result = p_statement.executeQuery();
             return getPackList(result);
+        }
+    }
+
+    public boolean isPublic(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT is_public FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            return result.getInt(1) == 1;
+        }
+    }
+
+    public List<CardThumbnail> getCardThumbnails(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblCard.id, tblCard.front, tblCard.front_color FROM tblCard INNER JOIN tblCardLink ON tblCard.id = tblCardLink.card_id WHERE tblCardLink.pack_id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            List<CardThumbnail> card_thumbnails = new ArrayList<>();
+            while (result.next()) {
+                int id = result.getInt(1);
+                String front = result.getString(2);
+                String front_color = result.getString(3);
+
+                card_thumbnails.add(new CardThumbnail(
+                        id, front, front_color
+                ));
+            }
+            return card_thumbnails;
         }
     }
 }

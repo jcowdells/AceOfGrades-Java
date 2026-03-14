@@ -147,7 +147,7 @@ body {
     border: 1px solid #000000;
 }
 
-.packs-container {
+.packs-container, #cards-container {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
@@ -185,12 +185,55 @@ body {
     box-shadow: 4px 4px 1px rgba(0, 0, 0, 0.5);
 }
 
-.packs-center {
+.card {
+    display: flex;
+    aspect-ratio: 2 / 1;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    color: #000000;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: all 0.1s ease-in-out;
+    box-shadow: 4px 4px 1px rgba(0, 0, 0, 0.5);
+    outline: white solid 0;
+    position: relative;
+}
+
+.card:hover {
+    outline-width: 5px;
+}
+
+.card[data-selected="true"] {
+    outline-width: 2px;
+}
+
+.card[data-selected="true"]:hover {
+    outline-width: 5px;
+    outline-color: red;
+}
+
+.card span {
+    position: absolute;
+    transition: all 0.1s ease-in-out;
+    opacity: 0;
+    top: 10px;
+    left: 10px;
+}
+
+.card[data-selected="true"] span {
+    opacity: 100%;
+}
+
+.packs-center, #cards-center {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    gap: 10px;
     color: #FFFFFF;
 }
 
@@ -266,6 +309,7 @@ body {
     margin: 10px;
     width: 50%;
     height: 100%;
+    color: white;
 }
 
 .pack-display {

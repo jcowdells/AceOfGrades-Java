@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PacksQuizCompleteApiHandler implements Handler {
     private final CardManager card_manager;

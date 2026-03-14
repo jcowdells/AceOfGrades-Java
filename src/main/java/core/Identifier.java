@@ -66,6 +66,49 @@ public class Identifier {
         failed = false;
     }
 
+    // almost an exact copy, just doesn't check if the user is the owner of the card
+    public Identifier(@NotNull Context context, DBManager db_manager, String param_name, String resource_name) {
+        String identifier = context.pathParam(param_name);
+
+        // firstly, make sure that the identifier exists
+        if (identifier == null) {
+            error_message = Identifier.noIDMessage(resource_name);
+            id = -1;
+            failed = true;
+            return;
+        }
+
+        // next, attempt to get it into integer form
+        int tmp_id;
+        try {
+            tmp_id = Integer.parseInt(identifier);
+        } catch (NumberFormatException e) {
+            error_message = Identifier.notIntegerMessage(resource_name);
+            id = -1;
+            failed = true;
+            return;
+        }
+
+        // now check it exists in the database
+        boolean exists;
+        try {
+            exists = db_manager.hasID(tmp_id);
+        } catch (SQLException e) {
+            exists = false;
+        }
+        if (!exists) {
+            error_message = Identifier.resourceDoesNotExistMessage(resource_name);
+            id = -1;
+            failed = true;
+            return;
+        }
+
+        // if all 3 are good, then it is a valid ID
+        error_message = null;
+        id = tmp_id;
+        failed = false;
+    }
+
     public int getID() {
         return id;
     }

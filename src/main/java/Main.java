@@ -60,9 +60,10 @@ public class Main {
         app.get("/packs/create/", new PacksCreateHandler(), AogRole.USER, AogRole.ADMIN);
         app.get("/explore/", new ExploreHandler(pack_manager));
         app.get("/packs/", new PacksHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
-        app.get("/packs/{pack_id}/view/", new PacksViewHandler(pack_manager));
+        app.get("/packs/{pack_id}/", new PacksViewHandler(pack_manager));
         app.get("/packs/{pack_id}/cards/create/", new PacksCardsCreateHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/quiz/", new PacksQuizHandler(pack_manager));
+        app.get("/packs/{pack_id}/select", new PacksSelectHandler(pack_manager, md_parser));
 
         // all api shenanigans
         // forms
@@ -71,6 +72,7 @@ public class Main {
         app.post("/forms/logout/", new LogoutApiHandler());
         app.post("/forms/packs/create/", new PacksCreateApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/cards/create/", new PacksCardsCreateApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/forms/packs/{pack_id}/select", new PacksSelectApiHandler());
         app.get("/forms/cards/{card_id}/edit/", new CardsEditFragmentHandler(card_manager));
         app.post("/forms/cards/{card_id}/edit/", new CardsEditApiHandler(card_manager));
 

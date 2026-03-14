@@ -1,5 +1,11 @@
 <#include "/common/base.ftl">
 <@content>
-    <p>This is a mega test</p>
-    <p>${user.role}</p>
+    <div class="centre-wide generic-container">
+        <h1>Welcome to AceOfGrades!</h1>
+        <h5><i>"The best offline flashcard flipper to hit the internet"</i></h5>
+        <p>Ever needed to do some flashcards but you forgot them?</p>
+        <p>Ever wanted to do some online flashcards, but had no internet?</p>
+        <p>Tell everyone about <u>aceofgrad.es</u>!</p>
+        <p><i>Sponsored by the legendmixer foundation</i></p>
+    </div>
 </@content>
