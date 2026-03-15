@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PacksSelectHandler implements Handler {
+public class PacksStealHandler implements Handler {
     private final MarkdownHTML md_parser;
     private final PackManager pack_manager;
 
-    public PacksSelectHandler(PackManager pack_manager, MarkdownHTML md_parser) {
+    public PacksStealHandler(PackManager pack_manager, MarkdownHTML md_parser) {
         this.md_parser = md_parser;
         this.pack_manager = pack_manager;
     }
@@ -27,18 +27,35 @@ public class PacksSelectHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         Integer user_id = context.sessionAttribute("user_id");
-
-        Identifier pack_id = new Identifier(
-                context, pack_manager,
-                "pack_id", "pack"
-        );
-        if (pack_id.hasFailed()) {
-            Renderer.renderError(context, pack_id.getErrorMessage());
+        if (user_id == null) {
+            Renderer.renderError(context, "Could not find user ID!");
             return;
         }
 
-        if (!pack_manager.isPublic(pack_id.getID()) && (user_id == null || !pack_manager.isPackCreator(pack_id.getID(), user_id))) {
-            Renderer.renderError(context, Identifier.resourceDoesNotExistMessage("pack"));
+        String dest_id_str = context.queryParam("dest-id");
+        if (dest_id_str == null) {
+            Renderer.renderError(context, Identifier.noIDMessage("destination pack"));
+            return;
+        }
+        int dest_id;
+        try {
+            dest_id = Integer.parseInt(dest_id_str);
+        } catch (NumberFormatException e) {
+            Renderer.renderError(context, Identifier.notIntegerMessage("destination pack"));
+            return;
+        }
+        if (!pack_manager.hasID(dest_id) || !pack_manager.isPackCreator(dest_id, user_id)) {
+            Renderer.renderError(context, Identifier.resourceDoesNotExistMessage("destination pack"));
+            return;
+        }
+
+        Identifier pack_id = new Identifier(
+                context, pack_manager,
+                "pack_id", "pack",
+                user_id
+        );
+        if (pack_id.hasFailed()) {
+            Renderer.renderError(context, pack_id.getErrorMessage());
             return;
         }
 
@@ -54,6 +71,7 @@ public class PacksSelectHandler implements Handler {
         Map<String, Object> model = new HashMap<>();
         model.put("cards", cards);
         model.put("pack_id", pack_id.getID());
+        model.put("dest_id", dest_id);
         Renderer.render(context, "/templates/select_cards.ftl", model);
     }
 }

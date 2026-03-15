@@ -389,6 +389,10 @@ body {
     transition: 0.2s;
 }
 
+.form-button a {
+    text-decoration: none;
+}
+
 .form-button:hover {
     background-color: #2973B2;
 }

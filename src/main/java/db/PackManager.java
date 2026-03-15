@@ -8,7 +8,9 @@ import core.Pair;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PackManager implements DBManager {
     private final DataSource data_source;
@@ -141,10 +143,10 @@ public class PackManager implements DBManager {
     }
 
     public List<Card> getPackCards(int pack_id) throws SQLException {
-        Pair<String, String> pack_color = getPackColor(pack_id);
+        Map<Integer, Pair<String, String>> color_cache = new HashMap<>();
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblCard.id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
+                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
             );
             p_statement.setInt(1, pack_id);
             ResultSet result = p_statement.executeQuery();
@@ -152,10 +154,19 @@ public class PackManager implements DBManager {
             List<Card> card_list = new ArrayList<>();
             while (result.next()) {
                 int card_id = result.getInt(1);
-                String front = result.getString(2);
-                String back = result.getString(3);
-                String front_color = result.getString(4);
-                String back_color = result.getString(5);
+                int origin_pack_id = result.getInt(2);
+                String front = result.getString(3);
+                String back = result.getString(4);
+                String front_color = result.getString(5);
+                String back_color = result.getString(6);
+
+                Pair<String, String> pack_color;
+                if (color_cache.containsKey(origin_pack_id)) {
+                    pack_color = color_cache.get(origin_pack_id);
+                } else {
+                    pack_color = getPackColor(origin_pack_id);
+                    color_cache.put(origin_pack_id, pack_color);
+                }
 
                 if (front_color == null || front_color.isEmpty())
                     front_color = pack_color.getA();
@@ -254,6 +265,32 @@ public class PackManager implements DBManager {
                 ));
             }
             return card_thumbnails;
+        }
+    }
+
+    public boolean containsCard(int pack_id, int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT 1 FROM tblCardLink WHERE card_id = ? AND pack_id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            p_statement.setInt(2, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            return result.next();
+        }
+    }
+
+    public void linkCards(int pack_id, List<Integer> card_ids) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "INSERT INTO tblCardLink (card_id, pack_id) VALUES (?, ?)"
+            );
+            for (Integer card_id : card_ids) {
+                p_statement.setInt(1, card_id);
+                p_statement.setInt(2, pack_id);
+                p_statement.addBatch();
+            }
+            p_statement.executeBatch();
         }
     }
 }

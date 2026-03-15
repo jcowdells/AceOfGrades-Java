@@ -1,5 +1,8 @@
 package handlers;
 
+import aog.Card;
+import aog.CardThumbnail;
+import aog.Pack;
 import aog.Renderer;
 import core.Identifier;
 import db.PackManager;
@@ -7,32 +10,40 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class PacksViewHandler implements Handler {
+public class PacksStealSelectHandler implements Handler {
     private final PackManager pack_manager;
 
-    public PacksViewHandler(PackManager pack_manager) {
+    public PacksStealSelectHandler(PackManager pack_manager) {
         this.pack_manager = pack_manager;
     }
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
+        Integer user_id = context.sessionAttribute("user_id");
+        if (user_id == null) {
+            Renderer.renderError(context, "Could not get user ID!");
+            return;
+        }
+
         Identifier pack_id = new Identifier(
                 context, pack_manager,
-                "pack_id", "pack"
+                "pack_id", "pack",
+                user_id
         );
         if (pack_id.hasFailed()) {
             Renderer.renderError(context, pack_id.getErrorMessage());
             return;
         }
 
-        final Integer user_id = context.sessionAttribute("user_id");
-        boolean is_creator = user_id != null && pack_manager.isPackCreator(pack_id.getID(), user_id);
+        List<Pack> packs = pack_manager.getUserCreatedPacks(user_id);
         Map<String, Object> model = new HashMap<>();
-        model.put("is_creator", is_creator);
         model.put("pack_id", pack_id.getID());
-        Renderer.render(context, "/templates/view_pack.ftl", model);
+        model.put("packs", packs);
+        Renderer.render(context,"/templates/steal_select.ftl", model);
     }
 }

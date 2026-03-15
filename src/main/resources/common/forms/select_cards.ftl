@@ -10,6 +10,6 @@
         </#list>
     </div>
     <div class="generic-container">
-        <button hx-post="/forms/packs/${pack_id}/select" hx-vals="js:{cards: selected_cards}" hx-target="#cards-center" hx-swap="outerHTML">Steal cards</button>
+        <button hx-post="/forms/packs/${pack_id}/steal" hx-vals="js:{dest_id: ${dest_id}, cards: selected_cards}" hx-target="#cards-center" hx-swap="outerHTML">Steal cards</button>
     </div>
 </div>
