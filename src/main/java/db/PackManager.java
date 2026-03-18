@@ -184,6 +184,21 @@ public class PackManager implements DBManager {
         }
     }
 
+    public List<Integer> getPackCardIDs(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblCard.id FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            List<Integer> card_ids = new ArrayList<>();
+            while (result.next()) {
+                card_ids.add(result.getInt(1));
+            }
+            return card_ids;
+        }
+    }
+
     private List<Pack> getPackList(ResultSet result) throws SQLException {
         List<Pack> packs = new ArrayList<>();
         while (result.next()) {
@@ -284,6 +299,20 @@ public class PackManager implements DBManager {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "INSERT INTO tblCardLink (card_id, pack_id) VALUES (?, ?)"
+            );
+            for (Integer card_id : card_ids) {
+                p_statement.setInt(1, card_id);
+                p_statement.setInt(2, pack_id);
+                p_statement.addBatch();
+            }
+            p_statement.executeBatch();
+        }
+    }
+
+    public void unlinkCards(int pack_id, List<Integer> card_ids) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "DELETE FROM tblCardLink WHERE card_id = ? AND pack_id = ?"
             );
             for (Integer card_id : card_ids) {
                 p_statement.setInt(1, card_id);

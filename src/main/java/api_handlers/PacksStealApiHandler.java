@@ -51,6 +51,12 @@ public class PacksStealApiHandler implements Handler {
             Renderer.renderHXError(context, Identifier.notIntegerMessage("destination pack"));
             return;
         }
+
+        if (pack_id.getID() == dest_id) {
+            Renderer.renderHXError(context, "Pack cannot steal its own cards!");
+            return;
+        }
+
         if (!pack_manager.hasID(dest_id) || !pack_manager.isPackCreator(dest_id, user_id)) {
             Renderer.renderHXError(context, Identifier.resourceDoesNotExistMessage("destination pack"));
             return;
@@ -77,6 +83,20 @@ public class PacksStealApiHandler implements Handler {
             }
         }
 
+        // find all the IDs that are in the destination, but are not selected
+        // these need to be removed.
+        List<Integer> remove_card_ids = pack_manager.getPackCardIDs(dest_id);
+        remove_card_ids.removeAll(card_ids);
+
+        // if the card isnt in the pack anyway, dont try and bloomin remove it
+        remove_card_ids.removeIf(card_id -> {
+           try {
+               return !pack_manager.containsCard(dest_id, card_id);
+           } catch (SQLException e) {
+               return true;
+           }
+        });
+
         // dont attempt to add cards that are already in the destination pack
         card_ids.removeIf(card_id -> {
             try {
@@ -87,7 +107,9 @@ public class PacksStealApiHandler implements Handler {
         });
 
         // ok cool, now we can actually add the cards to the destination pack
+        // and remove the cards that are not selected any more
         pack_manager.linkCards(dest_id, card_ids);
+        pack_manager.unlinkCards(dest_id, remove_card_ids);
         context.header("HX-Redirect", String.format("/packs/%d", pack_id.getID()));
     }
 }

@@ -59,13 +59,20 @@ public class PacksStealHandler implements Handler {
             return;
         }
 
+        if (pack_id.getID() == dest_id) {
+            Renderer.renderError(context, "Pack cannot steal its own cards!");
+            return;
+        }
+
         List<Card> card_thumbnails = pack_manager.getPackCards(pack_id.getID());
         List<CardThumbnail> cards = new ArrayList<>();
         for (Card card_thumbnail : card_thumbnails) {
+            boolean selected = pack_manager.containsCard(dest_id, card_thumbnail.getID());
             cards.add(new CardThumbnail(
                     card_thumbnail.getID(),
                     md_parser.MarkdownToHTML(card_thumbnail.getFront()),
-                    card_thumbnail.getFrontColor()
+                    card_thumbnail.getFrontColor(),
+                    selected
             ));
         }
         Map<String, Object> model = new HashMap<>();

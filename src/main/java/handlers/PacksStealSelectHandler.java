@@ -41,6 +41,8 @@ public class PacksStealSelectHandler implements Handler {
         }
 
         List<Pack> packs = pack_manager.getUserCreatedPacks(user_id);
+        // dont show the option to steal a pack to itself, but will defend more rigorously elsewhere anyway.
+        packs.removeIf(pack -> pack.getID() == pack_id.getID());
         Map<String, Object> model = new HashMap<>();
         model.put("pack_id", pack_id.getID());
         model.put("packs", packs);

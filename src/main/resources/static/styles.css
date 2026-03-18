@@ -115,6 +115,10 @@ body {
     padding: 20px;
 }
 
+#card-front textarea, #card-back textarea {
+    color: black;
+}
+
 #card-next {
     width: 80%;
     height: 80%;

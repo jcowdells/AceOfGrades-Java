@@ -3,7 +3,7 @@
     <h2><u>Select cards</u></h2>
     <div id="cards-container">
         <#list cards as card>
-            <div class="card prevent-select" style="background: ${card.getFrontColor()}" data-card-id="${card.getID()}">
+            <div class="card prevent-select" style="background: ${card.getFrontColor()}" data-card-id="${card.getID()}" data-selected="${card.getSelected()}">
                 <span>&#9989;</span>
                 <p>${card.getFront()}</p>
             </div>
