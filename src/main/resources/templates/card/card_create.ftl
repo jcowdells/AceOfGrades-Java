@@ -12,9 +12,9 @@
                 </div>
             </div>
             <div class="left-content generic-container">
-                <#include "/common/forms/create_card.ftl">
+                <#include "/common/forms/card/card_create.ftl">
             </div>
         </div>
     </div>
-    <script src="/static/create_card.js"></script>
+    <script src="/static/card_create.js"></script>
 </@content>

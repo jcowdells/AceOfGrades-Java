@@ -1,6 +1,6 @@
 <#include "/common/base.ftl">
 <@content>
     <div class="left-content generic-container">
-        <#include "/common/forms/create_pack.ftl">
+        <#include "/common/forms/user/register.ftl">
     </div>
 </@content>

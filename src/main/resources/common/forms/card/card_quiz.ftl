@@ -1,3 +1,4 @@
+<#include "/common/forms/input/redirect_button.ftl">
 <div id="modal">
 
 </div>
@@ -5,6 +6,13 @@
     <div id="game-container"
         data-pack-id="${pack_id}"
     >
+        <div id="game-complete-template" hidden>
+            <div class="generic-container centre-content">
+                <h3>Congratulations!</h3>
+                <p>Pack completed!</p>
+                <@redirect_button "/packs/${pack_id}" "Go back to pack"></@redirect_button>
+            </div>
+        </div>
         <div id="card-container">
             <div id="card-next">
                 Next card

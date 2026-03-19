@@ -79,7 +79,7 @@ public class Main {
 
         // api, javascript/json focused
         app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
-        app.post("/packs/{pack_id}/quiz/complete", new PacksQuizCompleteApiHandler(card_manager, json_string), AogRole.USER, AogRole.ADMIN);
+        app.post("/api/packs/{pack_id}/quiz/complete", new PacksQuizCompleteApiHandler(card_manager, json_string), AogRole.USER, AogRole.ADMIN);
 
         app.start(4409);
     }

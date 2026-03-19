@@ -79,6 +79,6 @@ public class PacksStealHandler implements Handler {
         model.put("cards", cards);
         model.put("pack_id", pack_id.getID());
         model.put("dest_id", dest_id);
-        Renderer.render(context, "/templates/select_cards.ftl", model);
+        Renderer.render(context, "/templates/card/card_select.ftl", model);
     }
 }

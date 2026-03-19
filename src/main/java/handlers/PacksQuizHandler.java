@@ -8,7 +8,6 @@ import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class PacksQuizHandler implements Handler {
@@ -42,6 +41,6 @@ public class PacksQuizHandler implements Handler {
         // html bootstrapping for javascript needs the pack id to get cards from api
         Map<String, Object> model = new HashMap<>();
         model.put("pack_id", pack_id.getID());
-        Renderer.render(context, "/templates/quiz.ftl", model);
+        Renderer.render(context, "/templates/card/card_quiz.ftl", model);
     }
 }

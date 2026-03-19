@@ -1,4 +1,4 @@
 <#include "/common/base.ftl">
 <@content>
-    <#include "/common/forms/error.ftl">
+    <#include "/common/error.ftl">
 </@content>

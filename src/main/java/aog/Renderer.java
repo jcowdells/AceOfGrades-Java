@@ -23,7 +23,7 @@ public class Renderer {
     public static void renderHXError(@NotNull Context context, String error_message) {
         Map<String, Object> model = new HashMap<>();
         model.put("error", error_message);
-        Renderer.render(context, "/common/forms/error.ftl", model);
+        Renderer.render(context, "/common/error.ftl", model);
     }
 
     public static void renderJsonError(@NotNull Context context, int status, String error, String reason) {

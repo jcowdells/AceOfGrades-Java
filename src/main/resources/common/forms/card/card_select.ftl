@@ -1,4 +1,4 @@
-<#include "/common/forms/form_submit.ftl">
+<#include "/common/forms/input/form_submit.ftl">
 <div id="cards-center">
     <h2><u>Select cards</u></h2>
     <div id="cards-container">

@@ -1,8 +1,6 @@
 package handlers;
 
 import aog.Renderer;
-import db.UserManager;
-import forms.LoginForm;
 import forms.RegisterForm;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -17,7 +15,7 @@ public class LoginHandler implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         Map<String, Object> model = new HashMap<>();
         model.put("form", new RegisterForm());
-        Renderer.render(context, "/templates/login.ftl", model);
+        Renderer.render(context, "/templates/user/login.ftl", model);
     }
 
 }

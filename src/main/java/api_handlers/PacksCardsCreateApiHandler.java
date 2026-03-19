@@ -74,12 +74,12 @@ public class PacksCardsCreateApiHandler implements Handler {
 
         if (card_form.hasErrors()) {
             model.put("form", card_form);
-            context.render("/common/forms/create_card.ftl", model);
+            context.render("/common/forms/card/create_card.ftl", model);
             return;
         }
 
         card_manager.createCard(pack_id.getID(), front, back, front_color, back_color);
         model.put("form", new CardsCreateForm(pack_colors.getA(), pack_colors.getB()));
-        context.render("/common/forms/create_card.ftl", model);
+        context.render("/common/forms/card/create_card.ftl", model);
     }
 }

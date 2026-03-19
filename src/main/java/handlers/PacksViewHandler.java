@@ -33,6 +33,6 @@ public class PacksViewHandler implements Handler {
         Map<String, Object> model = new HashMap<>();
         model.put("is_creator", is_creator);
         model.put("pack_id", pack_id.getID());
-        Renderer.render(context, "/templates/view_pack.ftl", model);
+        Renderer.render(context, "/templates/card/pack_view.ftl", model);
     }
 }

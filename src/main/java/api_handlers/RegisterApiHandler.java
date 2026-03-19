@@ -6,7 +6,6 @@ import forms.RegisterForm;
 import io.javalin.http.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -53,7 +52,7 @@ public class RegisterApiHandler implements Handler {
         if (register_form.hasErrors()) {
             Map<String, Object> model = new HashMap<>();
             model.put("form", register_form);
-            context.render("/common/forms/register.ftl", model);
+            context.render("/common/forms/user/register.ftl", model);
             return;
         }
 

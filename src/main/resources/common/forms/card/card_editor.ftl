@@ -1,6 +1,6 @@
-<#include "/common/forms/form_entry.ftl">
-<#include "/common/forms/form_color.ftl">
-<#include "/common/forms/form_submit.ftl">
+<#include "/common/forms/input/form_entry.ftl">
+<#include "/common/forms/input/form_color.ftl">
+<#include "/common/forms/input/form_submit.ftl">
 <div class="centre-space">
     <div class="arrange-across">
         <div>

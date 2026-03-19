@@ -46,6 +46,6 @@ public class PacksStealSelectHandler implements Handler {
         Map<String, Object> model = new HashMap<>();
         model.put("pack_id", pack_id.getID());
         model.put("packs", packs);
-        Renderer.render(context,"/templates/steal_select.ftl", model);
+        Renderer.render(context,"/templates/card/card_steal_select.ftl", model);
     }
 }

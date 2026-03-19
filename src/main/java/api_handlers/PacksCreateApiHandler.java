@@ -60,7 +60,7 @@ public class PacksCreateApiHandler implements Handler {
         if (create_pack_form.hasErrors()) {
             Map<String, Object> model = new HashMap<>();
             model.put("form", create_pack_form);
-            context.render("/common/forms/create_pack.ftl", model);
+            context.render("/common/forms/card/create_pack.ftl", model);
             return;
         }
 

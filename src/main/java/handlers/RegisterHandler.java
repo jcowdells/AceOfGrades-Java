@@ -15,6 +15,6 @@ public class RegisterHandler implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         Map<String, Object> model = new HashMap<>();
         model.put("form", new RegisterForm());
-        Renderer.render(context, "/templates/register.ftl", model);
+        Renderer.render(context, "/templates/user/register.ftl", model);
     }
 }

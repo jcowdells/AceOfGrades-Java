@@ -28,6 +28,6 @@ public class CardsEditFragmentHandler implements Handler {
         Map<String, Object> model = new HashMap<>();
         model.put("form", new CardsCreateForm(card.getFront(), card.getBack(), card.getFrontColor(), card.getBackColor()));
         model.put("card_id", card_id);
-        context.render("/common/forms/edit_card.ftl", model);
+        context.render("/common/forms/card/edit_card.ftl", model);
     }
 }

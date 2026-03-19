@@ -29,6 +29,6 @@ public class PacksHandler implements Handler {
         List<Pack> packs = pack_manager.getUserCreatedPacks(user_id);
         Map<String, Object> model = new HashMap<>();
         model.put("packs", packs);
-        Renderer.render(context, "/templates/packs.ftl", model);
+        Renderer.render(context, "/templates/card/packs.ftl", model);
     }
 }

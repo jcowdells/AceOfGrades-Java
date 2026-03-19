@@ -47,7 +47,7 @@ public class LoginApiHandler implements Handler {
         if (login_form.hasErrors()) {
             Map<String, Object> model = new HashMap<>();
             model.put("form", login_form);
-            context.render("/common/forms/login.ftl", model);
+            context.render("/common/forms/user/login.ftl", model);
             return;
         }
 

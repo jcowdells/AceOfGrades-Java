@@ -14,6 +14,6 @@ public class PacksCreateHandler implements Handler {
     public void handle(@NotNull Context context) throws Exception {
         Map<String, Object> model = new HashMap<>();
         model.put("form", new PacksCreateForm());
-        Renderer.render(context, "/templates/create_pack.ftl", model);
+        Renderer.render(context, "/templates/card/pack_create.ftl", model);
     }
 }

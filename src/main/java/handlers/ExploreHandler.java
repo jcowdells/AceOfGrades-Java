@@ -23,6 +23,6 @@ public class ExploreHandler implements Handler {
         List<Pack> packs = pack_manager.getPublicPacks();
         Map<String, Object> model = new HashMap<>();
         model.put("packs", packs);
-        Renderer.render(context, "/templates/explore.ftl", model);
+        Renderer.render(context, "/templates/card/explore.ftl", model);
     }
 }

@@ -1,7 +1,7 @@
-<#include "/common/forms/form_entry.ftl">
-<#include "/common/forms/form_checkbox.ftl">
-<#include "/common/forms/form_color.ftl">
-<#include "/common/forms/form_submit.ftl">
+<#include "/common/forms/input/form_entry.ftl">
+<#include "/common/forms/input/form_checkbox.ftl">
+<#include "/common/forms/input/form_color.ftl">
+<#include "/common/forms/input/form_submit.ftl">
 <form hx-post="/forms/packs/create" hx-target="this" hx-swap="outerHTML">
     <@form_entry form.getName() "Pack name:" "name" "text"></@form_entry>
     <@form_entry form.getDescription() "Description:" "description" "text"></@form_entry>

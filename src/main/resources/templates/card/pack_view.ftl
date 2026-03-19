@@ -1,5 +1,5 @@
 <#include "/common/base.ftl">
-<#include "/common/redirect_button.ftl">
+<#include "/common/forms/input/redirect_button.ftl">
 <@content>
     <div class="centre-wide">
         <div class="generic-container">

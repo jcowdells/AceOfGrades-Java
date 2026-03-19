@@ -45,7 +45,7 @@ public class PacksCardsCreateHandler implements Handler {
         String pack_description = pack_manager.getPackDescription(pack_id.getID());
         model.put("pack_name", pack_name);
         model.put("pack_description", pack_description);
-        Renderer.render(context, "/templates/create_card.ftl", model);
+        Renderer.render(context, "/templates/card/card_create.ftl", model);
     }
 
 }
