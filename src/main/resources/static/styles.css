@@ -347,6 +347,15 @@ body {
     width: 100%;
 }
 
+#quiz-style {
+    background-color: var(--aog-color);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Verdana, sans-serif;
+    border: 2px solid white;
+}
+
 .form textarea {
     height: 100%;
     box-sizing: border-box;

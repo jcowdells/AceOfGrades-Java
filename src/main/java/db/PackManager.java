@@ -322,4 +322,16 @@ public class PackManager implements DBManager {
             p_statement.executeBatch();
         }
     }
+
+    public int getNumCards(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT COUNT(pack_id) FROM tblCardLink WHERE pack_id = ? GROUP BY pack_id"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next()) return -1;
+            return result.getInt(1);
+        }
+    }
 }

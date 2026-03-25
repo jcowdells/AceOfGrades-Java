@@ -25,22 +25,23 @@ public class PacksGetCardsHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        final Integer user_id = context.sessionAttribute("user_id");
-        if (user_id == null) {
-            Renderer.renderHXError(context, "Failed to get user id!");
-            context.status(401);
-            return;
-        }
-
         Identifier pack_id = new Identifier(
                 context, pack_manager,
-                "pack_id", "pack",
-                user_id
+                "pack_id", "pack"
         );
         if (pack_id.hasFailed()) {
             Renderer.renderHXError(context, pack_id.getErrorMessage());
             context.status(404);
             return;
+        }
+
+        if (!pack_manager.isPublic(pack_id.getID())) {
+            final Integer user_id = context.sessionAttribute("user_id");
+            if (user_id == null || !pack_manager.isPackCreator(pack_id.getID(), user_id)) {
+                Renderer.renderHXError(context, Identifier.resourceDoesNotExistMessage("pack"));
+                context.status(404);
+                return;
+            }
         }
 
         List<Card> card_list = pack_manager.getPackCards(pack_id.getID());

@@ -4,6 +4,7 @@
     <div class="centre-wide">
         <div class="generic-container">
             <h3>Quiz</h3>
+            <#include "/common/forms/card/card_quiz_select.ftl">
         </div>
         <#if is_creator>
             <div class="left-content generic-container">

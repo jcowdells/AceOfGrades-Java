@@ -30,9 +30,17 @@ public class PacksViewHandler implements Handler {
 
         final Integer user_id = context.sessionAttribute("user_id");
         boolean is_creator = user_id != null && pack_manager.isPackCreator(pack_id.getID(), user_id);
+
+        int num_cards = pack_manager.getNumCards(pack_id.getID());
+        if (num_cards == -1) {
+            Renderer.renderError(context, Identifier.noIDMessage("pack"));
+            return;
+        }
+
         Map<String, Object> model = new HashMap<>();
         model.put("is_creator", is_creator);
         model.put("pack_id", pack_id.getID());
+        model.put("num_cards", num_cards);
         Renderer.render(context, "/templates/card/pack_view.ftl", model);
     }
 }

@@ -20,22 +20,23 @@ public class PacksQuizHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        // get user id
-        final Integer user_id = context.sessionAttribute("user_id");
-        if (user_id == null) {
-            Renderer.renderError(context, "Failed to get user id!");
-            return;
-        }
-
         // get pack id from url
         Identifier pack_id = new Identifier(
                 context, pack_manager,
-                "pack_id", "pack",
-                user_id
+                "pack_id", "pack"
         );
         if (pack_id.hasFailed()) {
             Renderer.renderError(context, pack_id.getErrorMessage());
             return;
+        }
+
+        if (!pack_manager.isPublic(pack_id.getID())) {
+            // get user id
+            final Integer user_id = context.sessionAttribute("user_id");
+            if (user_id == null || !pack_manager.isPackCreator(pack_id.getID(), user_id)) {
+                Renderer.renderError(context, "Failed to get user id!");
+                return;
+            }
         }
 
         // html bootstrapping for javascript needs the pack id to get cards from api

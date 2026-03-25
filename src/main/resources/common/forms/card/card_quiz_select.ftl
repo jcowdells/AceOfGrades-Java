@@ -1,0 +1,32 @@
+<#include "/common/forms/input/form_submit.ftl">
+<form hx-post="/forms/packs/${pack_id}/quiz/start" hx-target="this" hx-swap="outerHTML">
+    <div id="random-description" hidden>
+        <h4>Random mode</h4>
+        <p>Choose a number of cards randomly out of the pack.</p>
+    </div>
+    <div id="weakest-description" hidden>
+        <h4>Weakest mode</h4>
+        <p>Choose the weakest 'n' cards out of the pack, based on the ratio of attempts to correct answers for each card.</p>
+    </div>
+    <div id="burnout-description" hidden>
+        <h4>Burnout mode</h4>
+        <p>Like weakest mode, chooses the weakest 'n' cards out of the pack. If a card is marked incorrect, it is moved back to the bottom of the pile so that it can be reattempted.</p>
+    </div>
+    <div class="form">
+        <label for="quiz-style">Choose a quiz style:</label>
+        <select id="quiz-style" name="quiz-style">
+            <option value="random">Random</option>
+            <option value="weakest">Weakest</option>
+            <option value="burnout">Burnout</option>
+        </select>
+    </div>
+    <br>
+    <div id="selected-description" style="margin-left: 2rem"></div>
+    <br>
+    <div class="form">
+        <label for="num-cards">Choose the pile size:</label>
+        <input type="number" id="num-cards" name="num-cards" min="0" max="${num_cards}" value="${num_cards}">
+    </div>
+    <@form_submit "Start quiz"></@form_submit>
+</form>
+<script src="/static/card_quiz_select.js"></script>
