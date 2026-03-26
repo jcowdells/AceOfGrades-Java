@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 :root {
     --aog-color: #9ACBD0;
 }
@@ -13,36 +15,56 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #444444;
-    font-family: Verdana, sans-serif;
+    background-color: #363636;
+
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.1px;
 }
 
 #navbar {
     margin: 0 0 20px 0;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
     background: var(--aog-color);
 }
 
-#navbar li {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.25);
-    padding: 10px;
-    margin: 5px;
-    border-radius: 10px;
+#navbar ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    list-style-type: none;
+
+    box-shadow: 0px 13px 21px -17px #0001;
 }
 
-#navbar li a {
-    margin: 0;
-    color: #FFFFFF;
-    text-decoration: none;
+#navbar li {
+    background: #0003;
     transition: 0.2s;
 }
 
+#navbar li:hover {
+    background: #0004;
+    box-shadow: inset 0px -25px 14px -16px #0001;
+}
+
+#navbar li a {
+    padding: 10px 30px 10px 30px;
+    margin: 0;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+
+    text-shadow: 0px 0px 4px #00000014;
+}
+
 #navbar li a:hover {
-    color: #2973B2;
+    color: #acd9ff;
+    text-shadow: 0px 0px 4px #00000034;
 }
 
 #navbar li button {
@@ -308,7 +330,7 @@ body {
 
 .generic-container {
     background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 20px;
     margin: 10px;
     width: 50%;
