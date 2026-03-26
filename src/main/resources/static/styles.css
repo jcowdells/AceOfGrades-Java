@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 :root {
     --aog-color: #9ACBD0;
 }
@@ -14,7 +16,9 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #363636;
-    font-family: Verdana, sans-serif;
+
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.1px;
 }
 
 #navbar {
@@ -326,7 +330,7 @@ body {
 
 .generic-container {
     background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 20px;
     margin: 10px;
     width: 50%;
