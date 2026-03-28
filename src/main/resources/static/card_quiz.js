@@ -19,8 +19,9 @@ function rectContainsPoint(rect, x, y) {
 
 function onLoadQuiz(cards_data) {
     // extract cards data
-    const num_cards = cards_data["num_cards"];
     const cards = cards_data["cards"]
+    const quiz_style = cards_data["quiz-style"]
+    const post_results = cards_data["post-results"];
 
     // card completion data
     let quiz_data = [];
@@ -80,31 +81,34 @@ function onLoadQuiz(cards_data) {
     }
 
     function finishPack() {
-        const pack_id = document.getElementById("game-container").getAttribute("data-pack-id");
-        fetch(
-            `/api/packs/${pack_id}/quiz/complete`, {
-                method: "POST",
-                headers : {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({cards: quiz_data})
-            }
-        ).then(
-            response => {
-                if (response.ok) {
-                    return response.json();
+        if (post_results) {
+            const pack_id = document.getElementById("game-container").getAttribute("data-pack-id");
+            console.log(quiz_data);
+            fetch(
+                `/api/packs/${pack_id}/quiz/complete`, {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({cards: quiz_data})
                 }
-                return Promise.reject(response);
-            }
-        ).catch(error => {
-            error.text().then(
-                text => {
-                    const content = document.getElementById("content");
-                    content.innerHTML = text;
+            ).then(
+                response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return Promise.reject(response);
                 }
-            );
-        });
+            ).catch(error => {
+                error.text().then(
+                    text => {
+                        const content = document.getElementById("content");
+                        content.innerHTML = text;
+                    }
+                );
+            });
+        }
         document.getElementById("game-container").innerHTML = document.getElementById("game-complete-template").innerHTML;
     }
 
@@ -136,13 +140,18 @@ function onLoadQuiz(cards_data) {
         const quiz_index = quiz_data.findIndex(q => q["id"] === card_id);
         if (quiz_index >= 0) {
             quiz_data[quiz_index]["attempts"] += 1;
-            if (correct) quiz_data[quiz_index] += 1;
+            if (correct) quiz_data[quiz_index]["correct"] += 1;
         } else {
             quiz_data.push({
                 "id": card_id,
                 "attempts": 1,
                 "correct": correct ? 1 : 0
             })
+        }
+
+        if (!correct && quiz_style === "burnout") {
+            // add card back to the pile in burnout mode
+            cards.push(cards[0]);
         }
 
         // update variables
@@ -335,13 +344,23 @@ function onLoadEditor() {
 }
 
 document.body.addEventListener("htmx:load", function(event) {
-    const pack_id = document.getElementById("game-container").getAttribute("data-pack-id");
+    const game_container = document.getElementById("game-container");
+    const pack_id = game_container.getAttribute("data-pack-id");
+    const quiz_style = game_container.getAttribute("data-quiz-style");
+    const num_cards = Number(game_container.getAttribute("data-num-cards"));
     if (editing) {
         onLoadEditor();
     } else {
         fetch(
             `/api/packs/${pack_id}/cards/`, {
-                method: "POST"
+                method: "POST",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "quiz-style": quiz_style,
+                    "num-cards": num_cards
+                })
             }
         ).then(
             response => {

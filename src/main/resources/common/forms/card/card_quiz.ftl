@@ -5,6 +5,8 @@
 <div class="centre-content" style="width: 100%; height: 100%">
     <div id="game-container"
         data-pack-id="${pack_id}"
+        data-quiz-style="${quiz_style}"
+        data-num-cards="${num_cards}"
     >
         <div id="game-complete-template" hidden>
             <div class="generic-container centre-content">

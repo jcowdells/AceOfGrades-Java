@@ -142,45 +142,62 @@ public class PackManager implements DBManager {
         }
     }
 
-    public List<Card> getPackCards(int pack_id) throws SQLException {
+    private List<Card> generateCardList(ResultSet result) throws SQLException {
         Map<Integer, Pair<String, String>> color_cache = new HashMap<>();
+
+        List<Card> card_list = new ArrayList<>();
+        while (result.next()) {
+            int card_id = result.getInt(1);
+            int origin_pack_id = result.getInt(2);
+            String front = result.getString(3);
+            String back = result.getString(4);
+            String front_color = result.getString(5);
+            String back_color = result.getString(6);
+
+            Pair<String, String> pack_color;
+            if (color_cache.containsKey(origin_pack_id)) {
+                pack_color = color_cache.get(origin_pack_id);
+            } else {
+                pack_color = getPackColor(origin_pack_id);
+                color_cache.put(origin_pack_id, pack_color);
+            }
+
+            if (front_color == null || front_color.isEmpty())
+                front_color = pack_color.getA();
+
+            if (back_color == null || back_color.isEmpty())
+                back_color = pack_color.getB();
+
+            card_list.add(new Card(
+                    card_id,
+                    front, back,
+                    front_color, back_color
+            ));
+        }
+        return card_list;
+    }
+
+    public List<Card> getPackCards(int pack_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
             );
             p_statement.setInt(1, pack_id);
             ResultSet result = p_statement.executeQuery();
+            return generateCardList(result);
+        }
+    }
 
-            List<Card> card_list = new ArrayList<>();
-            while (result.next()) {
-                int card_id = result.getInt(1);
-                int origin_pack_id = result.getInt(2);
-                String front = result.getString(3);
-                String back = result.getString(4);
-                String front_color = result.getString(5);
-                String back_color = result.getString(6);
-
-                Pair<String, String> pack_color;
-                if (color_cache.containsKey(origin_pack_id)) {
-                    pack_color = color_cache.get(origin_pack_id);
-                } else {
-                    pack_color = getPackColor(origin_pack_id);
-                    color_cache.put(origin_pack_id, pack_color);
-                }
-
-                if (front_color == null || front_color.isEmpty())
-                    front_color = pack_color.getA();
-
-                if (back_color == null || back_color.isEmpty())
-                    back_color = pack_color.getB();
-
-                card_list.add(new Card(
-                        card_id,
-                        front, back,
-                        front_color, back_color
-                ));
-            }
-            return card_list;
+    public List<Card> getPackCardsByRatio(int pack_id, int user_id, int num_cards) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color, (tblCardStats.correct / tblCardStats.attempts) AS ratio FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id INNER JOIN tblCardStats ON tblCardStats.card_id = tblCard.id AND tblCardStats.user_id = ? WHERE tblCardLink.pack_id = ? ORDER BY ratio LIMIT ?"
+            );
+            p_statement.setInt(1, user_id);
+            p_statement.setInt(2, pack_id);
+            p_statement.setInt(3, num_cards);
+            ResultSet result = p_statement.executeQuery();
+            return generateCardList(result);
         }
     }
 
@@ -330,7 +347,7 @@ public class PackManager implements DBManager {
             );
             p_statement.setInt(1, pack_id);
             ResultSet result = p_statement.executeQuery();
-            if (!result.next()) return -1;
+            if (!result.next()) return 0;
             return result.getInt(1);
         }
     }
