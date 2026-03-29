@@ -1,33 +1,23 @@
 package api_handlers;
 
-import aog.Card;
 import db.CardManager;
-import forms.CardsCreateForm;
+import db.PackManager;
+import handlers.CardsEditHandler;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CardsEditFragmentHandler implements Handler {
     private final CardManager card_manager;
+    private final PackManager pack_manager;
 
-    public CardsEditFragmentHandler(CardManager card_manager) {
+    public CardsEditFragmentHandler(CardManager card_manager, PackManager pack_manager) {
         this.card_manager = card_manager;
+        this.pack_manager = pack_manager;
     }
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        final Integer card_id = CardsEditApiHandler.getCardId(context, card_manager);
-        if (card_id == null)
-            return;
-
-        Card card = card_manager.getCard(card_id);
-
-        Map<String, Object> model = new HashMap<>();
-        model.put("form", new CardsCreateForm(card.getFront(), card.getBack(), card.getFrontColor(), card.getBackColor()));
-        model.put("card_id", card_id);
-        context.render("/common/forms/card/edit_card.ftl", model);
+        CardsEditHandler.genericHandle(context, card_manager, pack_manager, "/common/forms/card/card_edit_fragment.ftl");
     }
 }

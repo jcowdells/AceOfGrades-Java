@@ -51,14 +51,11 @@ public class PacksCardsCreateApiHandler implements Handler {
         String front_color = context.formParam("front_color");
         String back_color = context.formParam("back_color");
 
-        CardsCreateForm card_form = new CardsCreateForm(front, back, front_color, back_color);
-
-        if (front == null || front.isEmpty()) {
-            card_form.getFront().addError("Front cannot be empty!");
-        }
-        if (back == null || back.isEmpty()) {
-            card_form.getBack().addError("Back cannot be empty!");
-        }
+        CardsCreateForm card_form = CardsEditApiHandler.getCardsCreateForm(
+                front, back,
+                front_color, back_color,
+                pack_colors
+        );
 
         // if matches pack colour, don't store it. (will allow pack colour to change and affect all cards).
         if (front_color == null || pack_colors.getA().equals(front_color)) {
@@ -74,12 +71,12 @@ public class PacksCardsCreateApiHandler implements Handler {
 
         if (card_form.hasErrors()) {
             model.put("form", card_form);
-            context.render("/common/forms/card/create_card.ftl", model);
+            Renderer.render(context, "/common/forms/card/card_create.ftl", model);
             return;
         }
 
         card_manager.createCard(pack_id.getID(), front, back, front_color, back_color);
         model.put("form", new CardsCreateForm(pack_colors.getA(), pack_colors.getB()));
-        context.render("/common/forms/card/create_card.ftl", model);
+        Renderer.render(context, "/common/forms/card/card_create.ftl", model);
     }
 }

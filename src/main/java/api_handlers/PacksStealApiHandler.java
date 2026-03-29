@@ -83,9 +83,9 @@ public class PacksStealApiHandler implements Handler {
             }
         }
 
-        // find all the IDs that are in the destination, but are not selected
+        // find all the IDs that are in the SOURCE, but are not selected
         // these need to be removed.
-        List<Integer> remove_card_ids = pack_manager.getPackCardIDs(dest_id);
+        List<Integer> remove_card_ids = pack_manager.getPackCardIDs(pack_id.getID());
         remove_card_ids.removeAll(card_ids);
 
         // if the card isnt in the pack anyway, dont try and bloomin remove it

@@ -8,6 +8,7 @@ let transitioning = false;
 let side = "neither";
 let spin_fraction = 0;
 let click_pos = {"x": 0, "y": 0};
+let cards = [];
 
 function rectContainsPoint(rect, x, y) {
     if (x < rect.left) return false;
@@ -19,7 +20,7 @@ function rectContainsPoint(rect, x, y) {
 
 function onLoadQuiz(cards_data) {
     // extract cards data
-    const cards = cards_data["cards"]
+    cards = cards_data["cards"]
     const quiz_style = cards_data["quiz-style"]
     const post_results = cards_data["post-results"];
 
@@ -35,6 +36,16 @@ function onLoadQuiz(cards_data) {
     // stack elements
     const stack_correct = document.getElementById("stack-correct");
     const stack_incorrect = document.getElementById("stack-incorrect");
+
+    const edit_button = document.getElementById("edit-button");
+    edit_button.addEventListener("htmx:beforeOnLoad", (event) => {
+        if (event.detail.elt === edit_button) {
+            editing = true;
+            const modal = document.getElementById("modal");
+            modal.style.visibility = "visible";
+            modal.style.opacity = "1.0";
+        }
+    });
 
     function transition(time) {
         card_front.style.transition = "all " + time + "s ease-in-out";
@@ -112,28 +123,39 @@ function onLoadQuiz(cards_data) {
         document.getElementById("game-container").innerHTML = document.getElementById("game-complete-template").innerHTML;
     }
 
+    function updateEditButton(edit_card_id, editable) {
+        const edit_button = document.getElementById("edit-button");
+        edit_button.disabled = !editable;
+        if (!editable) edit_card_id = -1;
+        edit_button.setAttribute("hx-get", `/forms/cards/${edit_card_id}/edit`);
+        htmx.process(edit_button);
+    }
+
     function switchToNextCard(first_card=false) {
         if (!first_card) cards.shift();
         if (cards.length === 0) {
             card_front.remove();
             card_back.remove();
             finishPack();
+            updateEditButton(-1, false);
             return;
         }
+        transition(0);
         card_front.innerHTML = cards[0]["front"];
         card_back.innerHTML = cards[0]["back"];
-        card_front.style.background = cards[0]["front_color"];
-        card_back.style.background = cards[0]["back_color"];
+        card_front.style.background = cards[0]["front-color"];
+        card_back.style.background = cards[0]["back-color"];
+        updateEditButton(cards[0]["id"], cards[0]["is-owner"]);
         if (cards.length > 1) {
             card_next.innerHTML = cards[1]["front"];
-            card_next.style.background = cards[1]["front_color"];
+            card_next.style.background = cards[1]["front-color"];
         } else {
             card_next.remove();
         }
     }
 
     function moveToStack(stack, correct) {
-        if (cards.length === 0)
+        if (cards.length === 0 || editing)
             return;
 
         const card_id = cards[0]["id"];
@@ -199,19 +221,19 @@ function onLoadQuiz(cards_data) {
     }
 
     stack_correct.addEventListener("click", function(event) {
-        if (switched) {
+        if (switched || editing) {
             moveToStack(stack_correct, true);
         }
     });
 
     stack_incorrect.addEventListener("click", function(event) {
-        if (switched) {
+        if (switched || editing) {
             moveToStack(stack_incorrect, false);
         }
     });
 
     card_container.addEventListener("mousedown", function(event) {
-        if (transitioning) {
+        if (transitioning || editing) {
             return;
         }
 
@@ -247,7 +269,7 @@ function onLoadQuiz(cards_data) {
     }
 
     document.onmouseup = function(event) {
-        if (side === "neither") {
+        if (side === "neither" || editing) {
             return;
         }
 
@@ -302,7 +324,7 @@ function onLoadQuiz(cards_data) {
 
     document.onmousemove = function(event) {
         // if mouse not down, then ignore
-        if (!clicked) {
+        if (!clicked || editing) {
             return;
         }
 
@@ -336,21 +358,58 @@ function onLoadQuiz(cards_data) {
         }
     }
 
+
+
     switchToNextCard(true);
 }
 
 function onLoadEditor() {
+    const edit_close = document.getElementById("edit-close");
+    edit_close.addEventListener("click", (event) => {
+        editing = false;
+        const modal = document.getElementById("modal");
+        modal.style.visibility = "hidden";
+        modal.style.opacity = "0.0";
 
+        fetch(
+            `/api/cards/${cards[0]["id"]}/`, {
+                method: "POST"
+            }
+        ).then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(
+            json => {
+                cards[0] = json;
+                const card_front = document.getElementById("card-front");
+                const card_back = document.getElementById("card-back");
+                card_front.innerHTML = cards[0]["front"];
+                card_back.innerHTML = cards[0]["back"];
+                card_front.style.background = cards[0]["front-color"];
+                card_back.style.background = cards[0]["back-color"];
+            }
+        ).catch(error => {
+            console.log(error);
+            error.text().then(
+                text => {
+                    const content = document.getElementById("content");
+                    content.innerHTML = text;
+                }
+            );
+        });
+    });
 }
 
 document.body.addEventListener("htmx:load", function(event) {
-    const game_container = document.getElementById("game-container");
-    const pack_id = game_container.getAttribute("data-pack-id");
-    const quiz_style = game_container.getAttribute("data-quiz-style");
-    const num_cards = Number(game_container.getAttribute("data-num-cards"));
     if (editing) {
         onLoadEditor();
     } else {
+        const game_container = document.getElementById("game-container");
+        const pack_id = game_container.getAttribute("data-pack-id");
+        const quiz_style = game_container.getAttribute("data-quiz-style");
+        const num_cards = Number(game_container.getAttribute("data-num-cards"));
         fetch(
             `/api/packs/${pack_id}/cards/`, {
                 method: "POST",

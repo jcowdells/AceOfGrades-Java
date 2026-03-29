@@ -8,7 +8,14 @@
         </div>
         <#if is_creator>
             <div class="left-content generic-container">
+                <h3>Add</h3>
+                <p>Click the button to add cards to this pack.</p>
+                <@redirect_button "/packs/${pack_id}/cards/create" "Edit cards"></@redirect_button>
+            </div>
+            <div class="left-content generic-container">
                 <h3>Edit</h3>
+                <p>Click the button to edit cards in this pack.</p>
+                <@redirect_button "/packs/${pack_id}/cards/edit" "Edit cards"></@redirect_button>
             </div>
             <div class="generic-container">
                 <h3>Find cards</h3>

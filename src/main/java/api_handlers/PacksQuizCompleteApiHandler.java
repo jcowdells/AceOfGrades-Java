@@ -30,7 +30,6 @@ public class PacksQuizCompleteApiHandler implements Handler {
         }
 
         final String body = context.body();
-        System.out.println(body);
         JsonNode request;
         try {
             request = json_string.getJsonNode(body);

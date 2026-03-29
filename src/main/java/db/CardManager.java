@@ -114,7 +114,7 @@ public class CardManager implements DBManager {
         }
     }
 
-    private Pair<String, String> getPackColor(int card_id) throws SQLException {
+    public Pair<String, String> getPackColor(int card_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT tblPack.front_color, tblPack.back_color FROM tblPack INNER JOIN tblCard ON tblPack.id = tblCard.pack_id WHERE tblCard.id = ?"
@@ -133,7 +133,7 @@ public class CardManager implements DBManager {
         try (Connection connection = data_source.getConnection()) {
             // attempt to get card data
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT front, back, front_color, back_color FROM tblCard WHERE id = ?"
+                    "SELECT front, back, tblCard.front_color, tblCard.back_color, creator_id FROM tblCard INNER JOIN tblPack ON tblCard.pack_id = tblPack.id WHERE tblCard.id = ?"
             );
             p_statement.setInt(1, card_id);
             ResultSet result = p_statement.executeQuery();
@@ -143,9 +143,10 @@ public class CardManager implements DBManager {
             String back = result.getString(2);
             String front_color = result.getString(3);
             String back_color = result.getString(4);
+            int creator_id = result.getInt(5);
 
             // check if card colour is not set, if so get the pack colour
-            boolean front_empty = front_color == null || front.isEmpty();
+            boolean front_empty = front_color == null || front_color.isEmpty();
             boolean back_empty = back_color == null || back_color.isEmpty();
 
             if (front_empty || back_empty) {
@@ -158,7 +159,7 @@ public class CardManager implements DBManager {
                     back_color = pack_color.getB();
             }
 
-            return new Card(card_id, front, back, front_color, back_color);
+            return new Card(card_id, front, back, front_color, back_color, creator_id);
         }
     }
 
@@ -197,6 +198,33 @@ public class CardManager implements DBManager {
                 p_statement.setInt(4, user_id);
                 p_statement.executeUpdate();
             }
+        }
+    }
+
+    public void editCard(int card_id, String front, String back, String front_color, String back_color) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "UPDATE tblCARD SET front = ?, back = ?, front_color = ?, back_color = ? WHERE id = ?"
+            );
+            p_statement.setString(1, front);
+            p_statement.setString(2, back);
+            p_statement.setString(3, front_color);
+            p_statement.setString(4, back_color);
+            p_statement.setInt(5, card_id);
+            p_statement.executeUpdate();
+        }
+    }
+
+    public boolean isPublic(int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT is_public FROM tblCard INNER JOIN tblPack ON tblPack.id = tblCard.pack_id WHERE tblCard.id = ?"
+            );
+            p_statement.setInt(1, card_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            return result.getInt(1) == 1;
         }
     }
 }

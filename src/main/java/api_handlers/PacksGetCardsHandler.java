@@ -35,16 +35,16 @@ public class PacksGetCardsHandler implements Handler {
                 "pack_id", "pack"
         );
         if (pack_id.hasFailed()) {
-            Renderer.renderHXError(context, pack_id.getErrorMessage());
-            context.status(404);
+            Renderer.renderJsonError(context, 404, "Error", pack_id.getErrorMessage());
             return;
         }
 
+        final Integer user_id = context.sessionAttribute("user_id");
+        boolean is_pack_creator = user_id != null && pack_manager.isPackCreator(pack_id.getID(), user_id);
+
         if (!pack_manager.isPublic(pack_id.getID())) {
-            final Integer user_id = context.sessionAttribute("user_id");
-            if (user_id == null || !pack_manager.isPackCreator(pack_id.getID(), user_id)) {
-                Renderer.renderHXError(context, Identifier.resourceDoesNotExistMessage("pack"));
-                context.status(404);
+            if (!is_pack_creator) {
+                Renderer.renderJsonError(context, 404, "Error", Identifier.resourceDoesNotExistMessage("pack"));
                 return;
             }
         }
@@ -56,7 +56,6 @@ public class PacksGetCardsHandler implements Handler {
         }
 
         final String body = context.body();
-        System.out.println(body);
         JsonNode request;
         try {
             request = json_string.getJsonNode(body);
@@ -70,9 +69,7 @@ public class PacksGetCardsHandler implements Handler {
             return;
         }
 
-        Integer user_id = context.sessionAttribute("user_id");
         String quiz_style = request.get("quiz-style").asText();
-
         int max_num_cards = pack_manager.getNumCards(pack_id.getID());
         int num_cards = request.get("num-cards").asInt(-1);
         if (num_cards < 0 || num_cards > max_num_cards) {
@@ -83,8 +80,6 @@ public class PacksGetCardsHandler implements Handler {
         // validate style
         boolean style_valid = false;
         for (String style : styles) {
-            System.out.println(quiz_style);
-
             if (quiz_style.equals(style)) {
                 style_valid = true;
                 break;
@@ -121,12 +116,16 @@ public class PacksGetCardsHandler implements Handler {
             // put in the data that needs no conversion
             Map<String, Object> card_json = new HashMap<>();
             card_json.put("id", card.getID());
-            card_json.put("front_color", card.getFrontColor());
-            card_json.put("back_color", card.getBackColor());
+            card_json.put("front-color", card.getFrontColor());
+            card_json.put("back-color", card.getBackColor());
 
             // now convert md to html
             card_json.put("front", md_parser.MarkdownToHTML(card.getFront()));
             card_json.put("back", md_parser.MarkdownToHTML(card.getBack()));
+
+            // add ownership details
+            card_json.put("is-owner", user_id != null && card.getCreatorID() == user_id);
+
             card_json_list.add(card_json);
         }
 
@@ -135,6 +134,7 @@ public class PacksGetCardsHandler implements Handler {
         cards_json.put("cards", card_json_list);
         cards_json.put("quiz-style", quiz_style);
         cards_json.put("post-results", user_id != null);
+        cards_json.put("is-owner", is_pack_creator);
 
         context.json(cards_json);
     }

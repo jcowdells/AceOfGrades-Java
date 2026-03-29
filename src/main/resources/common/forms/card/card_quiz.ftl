@@ -1,7 +1,4 @@
 <#include "/common/forms/input/redirect_button.ftl">
-<div id="modal">
-
-</div>
 <div class="centre-content" style="width: 100%; height: 100%">
     <div id="game-container"
         data-pack-id="${pack_id}"
@@ -34,6 +31,9 @@
         </div>
     </div>
     <div class="generic-container centre-content">
-        <button id="edit-button" class="form-button" hx-get="/forms/">Edit card</button>
+        <button id="edit-button" class="form-button" hx-get="/forms/cards/-1/edit" hx-target="#modal">Edit card</button>
     </div>
+</div>
+<div id="modal" style="opacity: 0; transition: all 1.0s ease-in-out; visibility: hidden; pointer-events: none">
+
 </div>

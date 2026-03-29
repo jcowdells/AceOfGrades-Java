@@ -153,6 +153,7 @@ public class PackManager implements DBManager {
             String back = result.getString(4);
             String front_color = result.getString(5);
             String back_color = result.getString(6);
+            int creator_id = result.getInt(7);
 
             Pair<String, String> pack_color;
             if (color_cache.containsKey(origin_pack_id)) {
@@ -171,7 +172,8 @@ public class PackManager implements DBManager {
             card_list.add(new Card(
                     card_id,
                     front, back,
-                    front_color, back_color
+                    front_color, back_color,
+                    creator_id
             ));
         }
         return card_list;
@@ -180,7 +182,7 @@ public class PackManager implements DBManager {
     public List<Card> getPackCards(int pack_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id WHERE tblCardLink.pack_id = ?"
+                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color, tblPack.creator_id FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id INNER JOIN tblPack ON tblCard.pack_id = tblPack.id WHERE tblCardLink.pack_id = ?"
             );
             p_statement.setInt(1, pack_id);
             ResultSet result = p_statement.executeQuery();
