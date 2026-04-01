@@ -27,6 +27,16 @@
         <label for="num-cards">Choose the pile size:</label>
         <input type="number" id="num-cards" name="num-cards" min="0" max="${num_cards}" value="${num_cards}">
     </div>
+    <div>
+        <h4>Spotlights</h4>
+        <p>Spotlights are a curated subset of a pack that focuses on a particular part of a topic; they tend to be small, bite-sized, 5 minute activities to refresh your memory on that topic.</p>
+    </div>
+    <div id="spotlights">
+        <#list spotlights as spotlight>
+            <input class="spotlight" type="submit" name="spotlight" value="${spotlight.getID()}">
+        </#list>
+        <input class="spotlight" type="submit" name="new-spotlight" value="${pack_id}">
+    </div>
     <@form_submit "Start quiz"></@form_submit>
 </form>
 <script src="/static/card_quiz_select.js"></script>

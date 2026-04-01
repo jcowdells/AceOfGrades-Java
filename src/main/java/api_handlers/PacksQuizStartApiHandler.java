@@ -37,13 +37,23 @@ public class PacksQuizStartApiHandler implements Handler {
             }
         }
 
+        String create_spotlight_str = context.formParam("new-spotlight");
+        if (create_spotlight_str != null) {
+            context.header("HX-Redirect", String.format("/packs/%d/spotlights/create", pack_id.getID()));
+            return;
+        }
+
         // grab form data
         String quiz_style_str = context.formParam("quiz-style");
         String num_cards_str = context.formParam("num-cards");
 
-        context.header("HX-Redirect", String.format("/packs/%d/quiz?quiz-style=%s&num-cards=%s", pack_id.getID(),
+        // spotlight data
+        String spotlight_id_str = context.formParam("spotlight");
+
+        context.header("HX-Redirect", String.format("/packs/%d/quiz?quiz-style=%s&num-cards=%s%s", pack_id.getID(),
                 quiz_style_str == null ? "" : quiz_style_str,
-                num_cards_str == null ? "" : num_cards_str
+                num_cards_str == null ? "" : num_cards_str,
+                spotlight_id_str == null ? "" : "&spotlight-id=" + spotlight_id_str
         ));
     }
 }

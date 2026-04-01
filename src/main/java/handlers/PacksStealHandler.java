@@ -70,7 +70,7 @@ public class PacksStealHandler implements Handler {
             boolean selected = pack_manager.containsCard(dest_id, card_thumbnail.getID());
             cards.add(new CardThumbnail(
                     card_thumbnail.getID(),
-                    md_parser.MarkdownToHTML(card_thumbnail.getFront()),
+                    md_parser.markdownToHTML(card_thumbnail.getFront()),
                     card_thumbnail.getFrontColor(),
                     selected
             ));

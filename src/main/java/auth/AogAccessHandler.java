@@ -44,7 +44,10 @@ public class AogAccessHandler implements Handler {
         // otherwise get the user role and make sure it is allowed
         AogRole role = getUserRole(context);
         if (!context.routeRoles().contains(role)) {
-            throw new UnauthorizedResponse();
+            context.header("HX-Redirect", "/login");
+            context.header("WWW-Authenticate", "Try WWW Authenticate This, Bro");
+            context.status(401);
+            context.redirect("/login");
         }
     }
 }

@@ -1,6 +1,5 @@
 package api_handlers;
 
-import aog.Pack;
 import aog.Renderer;
 import core.Identifier;
 import core.Pair;
@@ -24,7 +23,7 @@ public class CardsEditApiHandler implements Handler {
         this.pack_manager = pack_manager;
     }
 
-    public static Integer getCardId(@NotNull Context context, CardManager card_manager) throws SQLException {
+    public static Integer getCardID(@NotNull Context context, CardManager card_manager) throws SQLException {
         final Integer user_id = context.sessionAttribute("user_id");
         if (user_id == null) {
             Renderer.renderHXError(context, "Failed to get user id!");
@@ -64,7 +63,7 @@ public class CardsEditApiHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        final Integer card_id = getCardId(context, card_manager);
+        final Integer card_id = getCardID(context, card_manager);
         if (card_id == null)
             return;
 

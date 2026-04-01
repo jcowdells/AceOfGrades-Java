@@ -42,7 +42,7 @@
                 <a href="/explore">Explore</a>
             </li>
             <li>
-                <a href="">${user.username}</a>
+                <a href="/profiles/${user.getID()}">${user.username}</a>
             </li>
             <li style="right: 0; position: absolute">
                 <form action="/forms/logout" method="POST">

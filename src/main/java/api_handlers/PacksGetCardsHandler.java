@@ -120,8 +120,8 @@ public class PacksGetCardsHandler implements Handler {
             card_json.put("back-color", card.getBackColor());
 
             // now convert md to html
-            card_json.put("front", md_parser.MarkdownToHTML(card.getFront()));
-            card_json.put("back", md_parser.MarkdownToHTML(card.getBack()));
+            card_json.put("front", md_parser.markdownToHTML(card.getFront()));
+            card_json.put("back", md_parser.markdownToHTML(card.getBack()));
 
             // add ownership details
             card_json.put("is-owner", user_id != null && card.getCreatorID() == user_id);

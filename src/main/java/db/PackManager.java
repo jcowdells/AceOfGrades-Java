@@ -282,17 +282,29 @@ public class PackManager implements DBManager {
     }
 
     public List<CardThumbnail> getCardThumbnails(int pack_id) throws SQLException {
+        Map<Integer, String> color_cache = new HashMap<>();
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblCard.id, tblCard.front, tblCard.front_color FROM tblCard INNER JOIN tblCardLink ON tblCard.id = tblCardLink.card_id WHERE tblCardLink.pack_id = ?"
+                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.front_color FROM tblCard INNER JOIN tblCardLink ON tblCard.id = tblCardLink.card_id WHERE tblCardLink.pack_id = ?"
             );
             p_statement.setInt(1, pack_id);
             ResultSet result = p_statement.executeQuery();
             List<CardThumbnail> card_thumbnails = new ArrayList<>();
             while (result.next()) {
                 int id = result.getInt(1);
-                String front = result.getString(2);
-                String front_color = result.getString(3);
+                int origin_pack_id = result.getInt(2);
+                String front = result.getString(3);
+                String front_color = result.getString(4);
+
+                if (front_color == null || front_color.isEmpty()) {
+                    if (color_cache.containsKey(origin_pack_id)) {
+                        front_color = color_cache.get(origin_pack_id);
+                    } else {
+                        Pair<String, String> pack_color = getPackColor(origin_pack_id);
+                        color_cache.put(origin_pack_id, pack_color.getA());
+                        front_color = pack_color.getA();
+                    }
+                }
 
                 card_thumbnails.add(new CardThumbnail(
                         id, front, front_color
@@ -351,6 +363,58 @@ public class PackManager implements DBManager {
             ResultSet result = p_statement.executeQuery();
             if (!result.next()) return 0;
             return result.getInt(1);
+        }
+    }
+
+    public void deletePack(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                // delete occurrences in card link table
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCardLink WHERE pack_id = ? OR card_id IN (SELECT id FROM tblCard WHERE tblCard.pack_id = ?) "
+                )) {
+                    p_statement.setInt(1, pack_id);
+                    p_statement.setInt(2, pack_id);
+                    p_statement.executeUpdate();
+                }
+                // delete card statistics
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCardStats WHERE card_id IN (SELECT id FROM tblCard WHERE tblCard.pack_id = ?)"
+                )) {
+                    p_statement.setInt(1, pack_id);
+                    p_statement.executeUpdate();
+                }
+
+                // delete the cards
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCard WHERE pack_id = ?"
+                )) {
+                    p_statement.setInt(1, pack_id);
+                    p_statement.executeUpdate();
+                }
+
+                // delete pack links
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblPackLink WHERE pack_id = ?"
+                )) {
+                    p_statement.setInt(1, pack_id);
+                    p_statement.executeUpdate();
+                }
+
+                // delete the pack
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblPack WHERE id = ?"
+                )) {
+                    p_statement.setInt(1, pack_id);
+                    p_statement.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ public class CardsEditHandler implements Handler {
     }
 
     public static void genericHandle(@NotNull Context context, CardManager card_manager, PackManager pack_manager, String template) throws SQLException {
-        final Integer card_id = CardsEditApiHandler.getCardId(context, card_manager);
+        final Integer card_id = CardsEditApiHandler.getCardID(context, card_manager);
         if (card_id == null)
             return;
 

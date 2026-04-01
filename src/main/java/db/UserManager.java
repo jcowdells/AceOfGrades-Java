@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import aog.User;
+import aog.UserStats;
 import auth.AogRole;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -108,22 +109,89 @@ public class UserManager implements DBManager {
             String name = result.getString(1);
             String email = result.getString(2);
             String role = result.getString(3);
-            return new User(name, email, AogRole.valueOf(role));
+            return new User(user_id, name, email, AogRole.valueOf(role));
         }
     }
 
     public List<User> getAllUsers() throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery("SELECT username, emailAddress, role FROM tblUser");
+            ResultSet result = statement.executeQuery("SELECT id, username, emailAddress, role FROM tblUser");
             List<User> user_data = new ArrayList<>();
             while (result.next()) {
-                String name = result.getString(1);
-                String email = result.getString(2);
-                String role = result.getString(3);
-                user_data.add(new User(name, email, AogRole.valueOf(role)));
+                int id = result.getInt(1);
+                String name = result.getString(2);
+                String email = result.getString(3);
+                String role = result.getString(4);
+                user_data.add(new User(id, name, email, AogRole.valueOf(role)));
             }
             return user_data;
+        }
+    }
+
+    public UserStats getUserStats(int user_id)  throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            int num_cards = 0;
+            try (PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT COUNT(tblCard.id) FROM tblCard INNER JOIN tblPack ON tblPack.id = tblCard.pack_id WHERE creator_id = ?"
+            )) {
+                p_statement.setInt(1, user_id);
+                ResultSet result = p_statement.executeQuery();
+                if (result.next())
+                    num_cards = result.getInt(1);
+            }
+
+            int num_attempts = 0;
+            int num_correct = 0;
+            try (PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT SUM(attempts), SUM(correct) FROM tblCardStats WHERE user_id = ?"
+            )) {
+                p_statement.setInt(1, user_id);
+                ResultSet result = p_statement.executeQuery();
+                if (result.next()) {
+                    num_attempts = result.getInt(1);
+                    num_correct = result.getInt(2);
+                }
+            }
+
+            int num_packs = 0;
+            try (PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT COUNT(id) FROM tblPack WHERE creator_id = ?"
+            )) {
+                p_statement.setInt(1, user_id);
+                ResultSet result = p_statement.executeQuery();
+                if (result.next()) {
+                    num_packs = result.getInt(1);
+                }
+            }
+
+            int best_card = 0;
+            try (PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT card_id, (attempts * 1.0 / correct) AS ratio FROM tblCardStats WHERE user_id = ? ORDER BY ratio LIMIT 1"
+            )) {
+                p_statement.setInt(1, user_id);
+                ResultSet result = p_statement.executeQuery();
+                if (result.next()) {
+                    best_card = result.getInt(1);
+                }
+            }
+
+            int worst_card = 0;
+            try (PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT card_id, (attempts * 1.0 / correct) AS ratio FROM tblCardStats WHERE user_id = ? ORDER BY ratio DESC LIMIT 1"
+            )) {
+                p_statement.setInt(1, user_id);
+                ResultSet result = p_statement.executeQuery();
+                if (result.next()) {
+                    worst_card = result.getInt(1);
+                }
+            }
+
+            return new UserStats(
+                    num_cards, num_packs,
+                    num_attempts, num_correct,
+                    best_card, worst_card
+            );
         }
     }
 }

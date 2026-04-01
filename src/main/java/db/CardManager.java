@@ -227,4 +227,40 @@ public class CardManager implements DBManager {
             return result.getInt(1) == 1;
         }
     }
+
+    public void deleteCard(int card_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                // delete card from link table
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCardLink WHERE card_id = ?"
+                )) {
+                    p_statement.setInt(1, card_id);
+                    p_statement.executeUpdate();
+                }
+
+                // delete card from stats table
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCardStats WHERE card_id = ?"
+                )) {
+                    p_statement.setInt(1, card_id);
+                    p_statement.executeUpdate();
+                }
+
+                // delete card data
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCard WHERE id = ?"
+                )) {
+                    p_statement.setInt(1, card_id);
+                    p_statement.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
+        }
+    }
 }

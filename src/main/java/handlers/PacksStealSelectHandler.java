@@ -10,10 +10,7 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PacksStealSelectHandler implements Handler {
     private final PackManager pack_manager;
@@ -43,6 +40,7 @@ public class PacksStealSelectHandler implements Handler {
         List<Pack> packs = pack_manager.getUserCreatedPacks(user_id);
         // dont show the option to steal a pack to itself, but will defend more rigorously elsewhere anyway.
         packs.removeIf(pack -> pack.getID() == pack_id.getID());
+        packs.sort(Comparator.comparing(p -> p.getName().toLowerCase() + p.getDescription().toLowerCase()));
         Map<String, Object> model = new HashMap<>();
         model.put("pack_id", pack_id.getID());
         model.put("packs", packs);

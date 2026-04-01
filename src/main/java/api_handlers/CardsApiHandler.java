@@ -42,8 +42,8 @@ public class CardsApiHandler implements Handler {
         Card card = card_manager.getCard(card_id.getID());
         Map<String, Object> card_json = new HashMap<>();
         card_json.put("id", card.getID());
-        card_json.put("front", md_parser.MarkdownToHTML(card.getFront()));
-        card_json.put("back", md_parser.MarkdownToHTML(card.getBack()));
+        card_json.put("front", md_parser.markdownToHTML(card.getFront()));
+        card_json.put("back", md_parser.markdownToHTML(card.getBack()));
         card_json.put("front-color", card.getFrontColor());
         card_json.put("back-color", card.getBackColor());
         card_json.put("is-owner", user_id != null && user_id == card.getCreatorID());
