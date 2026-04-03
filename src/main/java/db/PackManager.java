@@ -193,7 +193,7 @@ public class PackManager implements DBManager {
     public List<Card> getPackCardsByRatio(int pack_id, int user_id, int num_cards) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color, (tblCardStats.correct / tblCardStats.attempts) AS ratio FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id INNER JOIN tblCardStats ON tblCardStats.card_id = tblCard.id AND tblCardStats.user_id = ? WHERE tblCardLink.pack_id = ? ORDER BY ratio LIMIT ?"
+                    "SELECT tblCard.id, tblCard.pack_id, tblCard.front, tblCard.back, tblCard.front_color, tblCard.back_color, (tblCardStats.correct * 1.0 / tblCardStats.attempts) AS ratio FROM tblCard INNER JOIN tblCardLink ON tblCardLink.card_id = tblCard.id INNER JOIN tblCardStats ON tblCardStats.card_id = tblCard.id AND tblCardStats.user_id = ? WHERE tblCardLink.pack_id = ? ORDER BY ratio LIMIT ?"
             );
             p_statement.setInt(1, user_id);
             p_statement.setInt(2, pack_id);
