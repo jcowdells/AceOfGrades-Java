@@ -1,8 +1,7 @@
-<#include "/common/forms/input/form_entry.ftl">
 <#include "/common/forms/input/form_submit.ftl">
-<form hx-post="/packs/${pack_id}/spotlights/create">
-    <div>
-        <@form_entry form.getName() "Spotlight name:" "spotlight-name" "text"></@form_entry>
+<form hx-post="/forms/packs/${pack_id}/spotlights/create" hx-swap="innerHTML" hx-target="#spotlight-form" hx-vals="js:{cards: selected_cards}">
+    <div id="spotlight-form">
+        <#include "/common/forms/card/spotlight_form.ftl">
     </div>
     <div>
         <div id="spotlights-center">
@@ -17,6 +16,5 @@
             </div>
         </div>
     </div>
-    <button class="form-button" type="submit" hx-vals="js:{cards: selected_cards}">Create spotlight</button>
+    <input class="form-button" type="submit" value="Create spotlight">
 </form>
-<script src="/static/card_select.js"></script>

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import core.Identifier;
 import db.PackManager;
+import db.SpotlightManager;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
@@ -16,14 +17,16 @@ import java.util.*;
 
 public class PacksGetCardsHandler implements Handler {
     private final PackManager pack_manager;
+    private final SpotlightManager spotlight_manager;
     private final MarkdownHTML md_parser;
     private final JsonString json_string;
     private final String[] styles = {
             "random", "weakest", "burnout"
     };
 
-    public PacksGetCardsHandler(PackManager pack_manager, MarkdownHTML md_parser, JsonString json_string) {
+    public PacksGetCardsHandler(PackManager pack_manager, SpotlightManager spotlight_manager, MarkdownHTML md_parser, JsonString json_string) {
         this.pack_manager = pack_manager;
+        this.spotlight_manager = spotlight_manager;
         this.md_parser = md_parser;
         this.json_string = json_string;
     }
@@ -96,16 +99,35 @@ public class PacksGetCardsHandler implements Handler {
         }
 
         List<Card> card_list;
-        if (quiz_style.equals("random")) {
-            card_list = pack_manager.getPackCards(pack_id.getID());
-            // whittle down the list to the specified size
-            Random random = new Random();
-            while (card_list.size() > num_cards) {
-                final int remove_index = random.nextInt(0, card_list.size());
-                card_list.remove(remove_index);
+        if (request.has("spotlight-id")) {
+            // get spotlight id and validate it
+            if (!request.get("spotlight-id").isInt()) {
+                Renderer.renderJsonError(context, 400, "Invalid values", "Spotlight ID must be an integer.");
+                return;
             }
+            int spotlight_id = request.get("spotlight-id").asInt(-1);
+            if (spotlight_id == -1 || !spotlight_manager.hasID(spotlight_id)) {
+                Renderer.renderJsonError(context, 404, "Error", Identifier.resourceDoesNotExistMessage("spotlight"));
+                return;
+            }
+
+            // filter to spotlight cards
+            card_list = pack_manager.getPackCards(pack_id.getID());
+            List<Integer> spotlight_cards = spotlight_manager.getSpotlightCardIDs(spotlight_id);
+            card_list.removeIf(card -> !spotlight_cards.contains(card.getID()));
+            num_cards = spotlight_cards.size();
         } else {
-            card_list = pack_manager.getPackCardsByRatio(pack_id.getID(), user_id, num_cards);
+            if (quiz_style.equals("random")) {
+                card_list = pack_manager.getPackCards(pack_id.getID());
+                // whittle down the list to the specified size
+                Random random = new Random();
+                while (card_list.size() > num_cards) {
+                    final int remove_index = random.nextInt(0, card_list.size());
+                    card_list.remove(remove_index);
+                }
+            } else {
+                card_list = pack_manager.getPackCardsByRatio(pack_id.getID(), user_id, num_cards);
+            }
         }
 
         // shuffle cards to random order

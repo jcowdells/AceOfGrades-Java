@@ -410,16 +410,21 @@ document.body.addEventListener("htmx:load", function(event) {
         const pack_id = game_container.getAttribute("data-pack-id");
         const quiz_style = game_container.getAttribute("data-quiz-style");
         const num_cards = Number(game_container.getAttribute("data-num-cards"));
+        let body = {
+            "quiz-style": quiz_style,
+            "num-cards": num_cards
+        }
+        const spotlight_id = game_container.getAttribute("data-spotlight-id");
+        if (spotlight_id !== "") {
+            body["spotlight-id"] = Number(spotlight_id);
+        }
         fetch(
             `/api/packs/${pack_id}/cards/`, {
                 method: "POST",
                 "headers": {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    "quiz-style": quiz_style,
-                    "num-cards": num_cards
-                })
+                body: JSON.stringify(body)
             }
         ).then(
             response => {

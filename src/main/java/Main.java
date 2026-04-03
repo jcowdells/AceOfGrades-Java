@@ -88,14 +88,16 @@ public class Main {
         app.post("/forms/packs/{pack_id}/steal/", new PacksStealApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/quiz/start/", new PacksQuizStartApiHandler(pack_manager));
         app.post("/forms/packs/{pack_id}/delete/", new PacksDeleteApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/forms/packs/{pack_id}/spotlights/create", new PacksSpotlightCreateApiHandler(spotlight_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/forms/cards/{card_id}/edit/", new CardsEditFragmentHandler(card_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/cards/{card_id}/edit/", new CardsEditApiHandler(card_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/cards/{card_id}/delete/", new CardsDeleteApiHandler(card_manager), AogRole.USER, AogRole.ADMIN);
 
         // api, javascript/json focused
-        app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager, md_parser, json_string));
+        app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager, spotlight_manager, md_parser, json_string));
         app.post("/api/packs/{pack_id}/quiz/complete/", new PacksQuizCompleteApiHandler(card_manager, json_string), AogRole.USER, AogRole.ADMIN);
         app.post("/api/cards/{card_id}/", new CardsApiHandler(card_manager, md_parser));
+        app.post("/api/spotlights/{spotlight_id}/delete", new SpotlightsDeleteApiHandler(spotlight_manager), AogRole.USER, AogRole.ADMIN);
 
         app.start(4409);
     }

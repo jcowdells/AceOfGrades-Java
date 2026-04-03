@@ -4,3 +4,4 @@
         <#include "/common/forms/card/spotlight_create.ftl">
     </div>
 </@content>
+<script src="/static/card_select.js"></script>

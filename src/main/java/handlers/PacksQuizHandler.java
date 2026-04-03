@@ -41,6 +41,7 @@ public class PacksQuizHandler implements Handler {
 
         String quiz_style_str = context.queryParam("quiz-style");
         String num_cards_str = context.queryParam("num-cards");
+        String spotlight_id_str = context.queryParam("spotlight-id");
         int num_cards = pack_manager.getNumCards(pack_id.getID());
 
         // html bootstrapping for javascript needs the pack id to get cards from api
@@ -50,6 +51,7 @@ public class PacksQuizHandler implements Handler {
         // inject style and num cards, assuming default values if not specified
         model.put("quiz_style", quiz_style_str == null ? "random" : quiz_style_str);
         model.put("num_cards", num_cards_str == null ? String.valueOf(num_cards) : num_cards_str);
+        model.put("spotlight_id", spotlight_id_str == null ? "" : spotlight_id_str);
         Renderer.render(context, "/templates/card/card_quiz.ftl", model);
     }
 }

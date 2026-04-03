@@ -4,6 +4,7 @@
         data-pack-id="${pack_id}"
         data-quiz-style="${quiz_style}"
         data-num-cards="${num_cards}"
+        data-spotlight-id="${spotlight_id}"
     >
         <div id="game-complete-template" hidden>
             <div class="generic-container centre-content">

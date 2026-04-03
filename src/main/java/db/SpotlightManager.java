@@ -1,5 +1,6 @@
 package db;
 
+import aog.Card;
 import aog.Spotlight;
 
 import javax.sql.DataSource;
@@ -95,6 +96,73 @@ public class SpotlightManager implements DBManager {
                 card_ids.add(result.getInt(1));
             }
             return card_ids;
+        }
+    }
+
+    public int createSpotlight(int pack_id, String name) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "INSERT INTO tblSpotlight (pack_id, name) VALUES (?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS
+            );
+            p_statement.setInt(1, pack_id);
+            p_statement.setString(2, name);
+            p_statement.executeUpdate();
+            ResultSet result = p_statement.getGeneratedKeys();
+            return result.next() ? result.getInt(1) : -1;
+        }
+    }
+
+    public void linkCards(int spotlight_id, List<Integer> card_ids) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "INSERT INTO tblSpotlightLink (spotlight_id, card_id) VALUES (?, ?)"
+            );
+            for (Integer card_id : card_ids) {
+                p_statement.setInt(1, spotlight_id);
+                p_statement.setInt(2, card_id);
+                p_statement.addBatch();
+            }
+            p_statement.executeBatch();
+        }
+    }
+
+    public boolean canEditSpotlight(int spotlight_id, int user_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT creator_id FROM tblPack INNER JOIN tblSpotlight ON tblSpotlight.pack_id = tblPack.id WHERE tblSpotlight.id = ?"
+            );
+            p_statement.setInt(1, spotlight_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return false;
+            return result.getInt(1) == user_id;
+        }
+    }
+
+    public void deleteSpotlight(int spotlight_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblSpotlightLink WHERE spotlight_id = ?"
+                )) {
+                    p_statement.setInt(1, spotlight_id);
+                    p_statement.executeUpdate();
+                }
+
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblSpotlight WHERE id = ?"
+                )) {
+                    p_statement.setInt(1, spotlight_id);
+                    p_statement.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
         }
     }
 }

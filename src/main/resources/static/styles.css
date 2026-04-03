@@ -471,5 +471,45 @@ body {
 }
 
 .spotlight {
+    position: relative;
+}
 
+.spotlight button {
+    background-color: #B3D8DC;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Verdana, sans-serif;
+    border: 2px solid white;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.spotlight button:hover {
+    background-color: #2973B2;
+}
+
+.spotlight span {
+    position: absolute;
+    margin-top: auto;
+    margin-bottom: auto;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    right: 0;
+}
+
+.delete-button {
+    background-color: lightcoral !important;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Verdana, sans-serif;
+    border: 2px solid white;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.delete-button:hover {
+    background: red !important;
 }

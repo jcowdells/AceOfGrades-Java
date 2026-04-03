@@ -33,9 +33,16 @@
     </div>
     <div id="spotlights">
         <#list spotlights as spotlight>
-            <input class="spotlight" type="submit" name="spotlight" value="${spotlight.getID()}">
+            <div class="spotlight">
+                <span>
+                    <button class="delete-button" data-spotlight-id="${spotlight.getID()}">X</button>
+                </span>
+                <button type="submit" name="spotlight" value="${spotlight.getID()}" style="padding-right: 1.5rem">${spotlight.getName()}</button>
+            </div>
         </#list>
-        <input class="spotlight" type="submit" name="new-spotlight" value="${pack_id}">
+        <div class="spotlight">
+            <button type="submit" name="new-spotlight" value="new-spotlight">Create new spotlight</button>
+        </div>
     </div>
     <@form_submit "Start quiz"></@form_submit>
 </form>

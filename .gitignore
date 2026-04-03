@@ -43,3 +43,6 @@ build/
 
 ### Database (cheers Matt) ###
 aog.sqlite3
+
+### jar ###
+/out/artifacts/AceOfGrades_jar/AceOfGrades.jar
