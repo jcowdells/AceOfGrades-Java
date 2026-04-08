@@ -1,7 +1,6 @@
 package handlers;
 
 import aog.Renderer;
-import api_handlers.PacksDeleteApiHandler;
 import db.PackManager;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -19,7 +18,7 @@ public class PacksDeleteHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        Integer pack_id = PacksDeleteApiHandler.getPackID(context, pack_manager);
+        Integer pack_id = PacksEditHandler.getPackID(context, pack_manager);
         if (pack_id == null) {
             return;
         }

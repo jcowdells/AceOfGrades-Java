@@ -1,6 +1,6 @@
 package handlers;
 
-import aog.Pack;
+import aog.PackThumbnail;
 import aog.Renderer;
 import db.PackManager;
 import io.javalin.http.Context;
@@ -21,7 +21,7 @@ public class PacksExploreHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        List<Pack> packs = pack_manager.getPublicPacks();
+        List<PackThumbnail> packs = pack_manager.getPublicPacks();
         packs.sort(Comparator.comparing(p -> p.getName().toLowerCase() + p.getDescription().toLowerCase()));
         Map<String, Object> model = new HashMap<>();
         model.put("packs", packs);

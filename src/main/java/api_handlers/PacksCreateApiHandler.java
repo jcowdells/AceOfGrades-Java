@@ -1,5 +1,6 @@
 package api_handlers;
 
+import aog.Pack;
 import aog.Renderer;
 import db.PackManager;
 import forms.PacksCreateForm;
@@ -29,42 +30,16 @@ public class PacksCreateApiHandler implements Handler {
             return;
         }
 
-        final String name = context.formParam("name");
-        final String description = context.formParam("description");
-        final String front_color = context.formParam("front_color");
-        final String back_color = context.formParam("back_color");
-        final String is_public_str = context.formParam("is_public");
-        final boolean is_public = is_public_str != null && !is_public_str.isEmpty();
-
-        PacksCreateForm create_pack_form = new PacksCreateForm(
-                name,
-                description,
-                front_color,
-                back_color,
-                is_public
-        );
-
-        if (name == null || name.isEmpty()) {
-            create_pack_form.getName().addError("Name cannot be empty!");
-        }
-        if (description == null || description.isEmpty()) {
-            create_pack_form.getDescription().addError("Description cannot be empty!");
-        }
-        if (front_color == null || !color_regex.matcher(front_color).matches()) {
-            create_pack_form.getFrontColor().addError("Invalid front colour!");
-        }
-        if (back_color == null || !color_regex.matcher(back_color).matches()) {
-            create_pack_form.getBackColor().addError("Invalid back colour!");
-        }
-
-        if (create_pack_form.hasErrors()) {
-            Map<String, Object> model = new HashMap<>();
-            model.put("form", create_pack_form);
-            context.render("/common/forms/card/create_pack.ftl", model);
+        Pack pack = PacksEditApiHandler.getPackFormData(context, color_regex, "/common/forms/card/pack_create.ftl", -1);
+        if (pack == null) {
             return;
         }
 
-        pack_manager.createPack(user_id, name, description, front_color, back_color, is_public);
-        context.header("HX-Redirect", "/");
+        pack_manager.createPack(
+                pack.getCreatorID(),
+                pack.getName(), pack.getDescription(),
+                pack.getFrontColor(), pack.getBackColor(),
+                pack.isPublic()
+        );
     }
 }

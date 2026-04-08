@@ -1,22 +1,20 @@
 package aog;
 
-public class Pack {
+public class PackThumbnail {
     private final int id;
     private final String name;
     private final String description;
     private final String front_color;
     private final String back_color;
-    private final int creator_id;
-    private final boolean is_public;
+    private final String creator;
 
-    public Pack(int id, int creator_id, String name, String description, String front_color, String back_color, boolean is_public) {
+    public PackThumbnail(int id, String name, String description, String front_color, String back_color, String creator) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.front_color = front_color;
         this.back_color = back_color;
-        this.creator_id = creator_id;
-        this.is_public = is_public;
+        this.creator = creator;
     }
 
     public int getID() {
@@ -39,11 +37,7 @@ public class Pack {
         return back_color;
     }
 
-    public int getCreatorID() {
-        return creator_id;
-    }
-
-    public boolean isPublic() {
-        return is_public;
+    public String getCreator() {
+        return creator;
     }
 }

@@ -221,13 +221,13 @@ function onLoadQuiz(cards_data) {
     }
 
     stack_correct.addEventListener("click", function(event) {
-        if (switched || editing) {
+        if (switched && !editing) {
             moveToStack(stack_correct, true);
         }
     });
 
     stack_incorrect.addEventListener("click", function(event) {
-        if (switched || editing) {
+        if (switched && !editing) {
             moveToStack(stack_incorrect, false);
         }
     });
@@ -268,6 +268,68 @@ function onLoadQuiz(cards_data) {
         rotate();
     }
 
+    function flipCard() {
+        move(0, 0);
+
+        if (switched) {
+            if (spin_fraction > 0) {
+                spin_fraction = 1;
+            } else {
+                spin_fraction = -1;
+            }
+        } else {
+            // spin around to the closest full spin.
+            if (spin_fraction > 1) {
+                spin_fraction = 2;
+            } else if (spin_fraction < -1) {
+                spin_fraction = -2;
+            } else {
+                spin_fraction = 0;
+            }
+            // after 1000ms, repair the spin
+            setTimeout(repairSpin, 1000);
+        }
+
+        rotate();
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === " " && !editing) {
+            event.preventDefault();
+        }
+
+        if (transitioning || editing) {
+            return;
+        }
+
+        switch (event.key) {
+            case " ":
+                // mark as not clicked.
+                clicked = false;
+                side = "neither";
+                flipped = false;
+                switched = !switched;
+
+                // make transitions be 1 seconds
+                transition(1);
+
+                flipCard();
+                break;
+            case "X":
+            case "x":
+                if (switched) {
+                    moveToStack(stack_incorrect, false);
+                }
+                break;
+            case "C":
+            case "c":
+                if (switched) {
+                    moveToStack(stack_correct, true);
+                }
+                break;
+        }
+    });
+
     document.onmouseup = function(event) {
         if (side === "neither" || editing) {
             return;
@@ -298,28 +360,7 @@ function onLoadQuiz(cards_data) {
             switched = !switched;
         }
 
-        move(0, 0);
-
-        if (switched) {
-            if (spin_fraction > 0) {
-                spin_fraction = 1;
-            } else {
-                spin_fraction = -1;
-            }
-        } else {
-            // spin around to the closest full spin.
-            if (spin_fraction > 1) {
-                spin_fraction = 2;
-            } else if (spin_fraction < -1) {
-                spin_fraction = -2;
-            } else {
-                spin_fraction = 0;
-            }
-            // after 1000ms, repair the spin
-            setTimeout(repairSpin, 1000);
-        }
-
-        rotate();
+        flipCard();
     }
 
     document.onmousemove = function(event) {
@@ -357,8 +398,6 @@ function onLoadQuiz(cards_data) {
             flipped = false;
         }
     }
-
-
 
     switchToNextCard(true);
 }

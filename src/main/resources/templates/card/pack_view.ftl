@@ -14,24 +14,37 @@
             </div>
             <div class="left-content generic-container">
                 <h3>Edit</h3>
+                <p>Click the button to edit the details of this pack.</p>
+                <@redirect_button "/packs/${pack_id}/edit" "Edit pack"></@redirect_button><br>
                 <p>Click the button to edit cards in this pack.</p>
                 <@redirect_button "/packs/${pack_id}/cards/edit" "Edit cards"></@redirect_button>
             </div>
-            <div class="generic-container">
+            <div class="left-content generic-container">
+                <h3>Move</h3>
+                <p>Click the button to move cards from this pack to another pack.</p>
+                <@redirect_button "/packs/${pack_id}/cards/move/select" "Move cards"></@redirect_button>
+            </div>
+            <div class="left-content generic-container">
                 <h3>Find cards</h3>
                 <p>Click the button to find cards to add to this pack.</p>
                 <@redirect_button "/explore" "Find cards"></@redirect_button>
             </div>
+        <#else>
+            <div class="left-content generic-container">
+                <h3>Follow</h3>
+                <p>Click the button to add this pack to your collection.</p>
+                <@redirect_button "/" "Follow"></@redirect_button>
+            </div>
         </#if>
         <#if user.role != "ANYONE">
-            <div class="generic-container">
+            <div class="left-content generic-container">
                 <h3>Steal</h3>
                 <p>Click the button to steal cards from this pack.</p>
                 <@redirect_button "/packs/${pack_id}/steal/select" "Steal"></@redirect_button>
             </div>
         </#if>
         <#if is_creator>
-            <div class="generic-container">
+            <div class="left-content generic-container">
                 <h3>Delete</h3>
                 <p>Click the button to delete cards from this pack.</p>
                 <@redirect_button "/packs/${pack_id}/cards/delete" "Delete cards"></@redirect_button>

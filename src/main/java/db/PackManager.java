@@ -3,6 +3,7 @@ package db;
 import aog.Card;
 import aog.CardThumbnail;
 import aog.Pack;
+import aog.PackThumbnail;
 import core.Pair;
 
 import javax.sql.DataSource;
@@ -86,6 +87,41 @@ public class PackManager implements DBManager {
             p_statement.setInt(1, pack_id);
             p_statement.setInt(2, creator_id);
             p_statement.executeUpdate();
+        }
+    }
+
+    public void updatePack(int pack_id, String name, String description, String front_color, String back_color, boolean is_public) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "UPDATE tblPack SET name = ?, description = ?, front_color = ?, back_color = ?, is_public = ? WHERE id = ?"
+            );
+            p_statement.setString(1, name);
+            p_statement.setString(2, description);
+            p_statement.setString(3, front_color);
+            p_statement.setString(4, back_color);
+            p_statement.setInt(5, is_public ? 1 : 0);
+            p_statement.setInt(6, pack_id);
+            p_statement.executeUpdate();
+        }
+    }
+
+    public Pack getPack(int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT * FROM tblPack WHERE id = ?"
+            );
+            p_statement.setInt(1, pack_id);
+            ResultSet result = p_statement.executeQuery();
+            if (!result.next())
+                return null;
+            int id = result.getInt(1);
+            int creator_id = result.getInt(2);
+            String name = result.getString(3);
+            String description = result.getString(4);
+            String front_color = result.getString(5);
+            String back_color = result.getString(6);
+            int is_public = result.getInt(7);
+            return new Pack(id, creator_id, name, description, front_color, back_color, is_public == 1);
         }
     }
 
@@ -218,8 +254,8 @@ public class PackManager implements DBManager {
         }
     }
 
-    private List<Pack> getPackList(ResultSet result) throws SQLException {
-        List<Pack> packs = new ArrayList<>();
+    private List<PackThumbnail> getPackList(ResultSet result) throws SQLException {
+        List<PackThumbnail> packs = new ArrayList<>();
         while (result.next()) {
             int pack_id = result.getInt(1);
             String name = result.getString(2);
@@ -228,7 +264,7 @@ public class PackManager implements DBManager {
             String back_color = result.getString(5);
             String username = result.getString(6);
 
-            packs.add(new Pack(
+            packs.add(new PackThumbnail(
                     pack_id, name, description,
                     front_color, back_color, username
             ));
@@ -236,7 +272,7 @@ public class PackManager implements DBManager {
         return packs;
     }
 
-    public List<Pack> getUserCreatedPacks(int user_id) throws SQLException {
+    public List<PackThumbnail> getUserCreatedPacks(int user_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblUser ON creator_id = tblUser.id WHERE creator_id = ?"
@@ -247,7 +283,7 @@ public class PackManager implements DBManager {
         }
     }
 
-    public List<Pack> getUserPacks(int user_id) throws SQLException {
+    public List<PackThumbnail> getUserPacks(int user_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblPackLink ON tblPackLink.pack_id = tblPack.id INNER JOIN tblUser ON tblPack.creator_id = tblUser.id WHERE tblPackLink.user_id = ?"
@@ -258,7 +294,7 @@ public class PackManager implements DBManager {
         }
     }
 
-    public List<Pack> getPublicPacks() throws SQLException {
+    public List<PackThumbnail> getPublicPacks() throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
                     "SELECT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblUser ON tblPack.creator_id = tblUser.id WHERE is_public = 1"
@@ -408,6 +444,52 @@ public class PackManager implements DBManager {
                 )) {
                     p_statement.setInt(1, pack_id);
                     p_statement.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
+        }
+    }
+
+    public void changeOwnership(List<Integer> card_ids, int new_pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "DELETE FROM tblCardLink WHERE card_id = ? AND EXISTS (SELECT 1 FROM tblCard WHERE tblCard.id = ? AND tblCard.pack_id = tblCardLink.pack_id)"
+                )) {
+                    for (Integer card_id : card_ids) {
+                        p_statement.setInt(1, card_id);
+                        p_statement.setInt(1, card_id);
+                        p_statement.addBatch();
+                    }
+                    p_statement.executeBatch();
+                }
+
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "UPDATE tblCard SET pack_id = ? WHERE id = ?"
+                )) {
+                    for (Integer card_id : card_ids) {
+                        p_statement.setInt(1, new_pack_id);
+                        p_statement.setInt(2, card_id);
+                        p_statement.addBatch();
+                    }
+                    p_statement.executeBatch();
+                }
+
+                // add to card link if they are not already linked
+                try (PreparedStatement p_statement = connection.prepareStatement(
+                        "INSERT OR IGNORE INTO tblCardLink (card_id, pack_id) VALUES (?, ?)"
+                )) {
+                    for (Integer card_id : card_ids) {
+                        p_statement.setInt(1, card_id);
+                        p_statement.setInt(2, new_pack_id);
+                        p_statement.addBatch();
+                    }
+                    p_statement.executeBatch();
                 }
 
                 connection.commit();

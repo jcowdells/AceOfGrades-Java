@@ -66,12 +66,15 @@ public class Main {
         app.get("/explore/", new PacksExploreHandler(pack_manager));
         app.get("/packs/", new PacksHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/", new PacksViewHandler(pack_manager, spotlight_manager));
+        app.get("/packs/{pack_id}/edit/", new PacksEditHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/create/", new PacksCardsCreateHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/quiz/", new PacksQuizHandler(pack_manager));
         app.get("/packs/{pack_id}/steal/select/", new PacksStealSelectHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/steal/", new PacksStealHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/cards/move/select/", new PacksCardsMoveSelectHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/cards/move/", new PacksCardsMoveHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/edit/", new PacksCardsEditHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
-        app.get("/packs/{pack_id}/delete", new PacksDeleteHandler(pack_manager));
+        app.get("/packs/{pack_id}/delete", new PacksDeleteHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/delete", new PacksCardsDeleteHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/spotlights/create", new PacksSpotlightCreateHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
         app.get("/cards/{card_id}/edit/", new CardsEditHandler(card_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
@@ -84,6 +87,7 @@ public class Main {
         app.post("/forms/login/", new LoginApiHandler(user_manager));
         app.post("/forms/logout/", new LogoutApiHandler());
         app.post("/forms/packs/create/", new PacksCreateApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/forms/packs/{pack_id}/edit", new PacksEditApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/cards/create/", new PacksCardsCreateApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/steal/", new PacksStealApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/quiz/start/", new PacksQuizStartApiHandler(pack_manager));
@@ -92,6 +96,7 @@ public class Main {
         app.get("/forms/cards/{card_id}/edit/", new CardsEditFragmentHandler(card_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/cards/{card_id}/edit/", new CardsEditApiHandler(card_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/cards/{card_id}/delete/", new CardsDeleteApiHandler(card_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/forms/packs/{pack_id}/cards/move", new PacksCardsMoveApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
 
         // api, javascript/json focused
         app.post("/api/packs/{pack_id}/cards/", new PacksGetCardsHandler(pack_manager, spotlight_manager, md_parser, json_string));
