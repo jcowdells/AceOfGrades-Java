@@ -60,7 +60,11 @@ public class PacksCardsEditHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         Map<String, Object> model = new HashMap<>();
-        model.put("cards", getEditableCards(context, pack_manager, md_parser));
+        List<CardThumbnail> cards = getEditableCards(context, pack_manager, md_parser);
+        if (cards == null) {
+            return;
+        }
+        model.put("cards", cards);
         Renderer.render(context, "/templates/card/card_edit_select.ftl", model);
     }
 }

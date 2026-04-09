@@ -1,5 +1,6 @@
 package handlers;
 
+import aog.CardThumbnail;
 import aog.MarkdownHTML;
 import aog.Renderer;
 import db.PackManager;
@@ -8,6 +9,7 @@ import io.javalin.http.Handler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PacksCardsDeleteHandler implements Handler {
@@ -22,7 +24,11 @@ public class PacksCardsDeleteHandler implements Handler {
     @Override
     public void handle(@NotNull Context context) throws Exception {
         Map<String, Object> model = new HashMap<>();
-        model.put("cards", PacksCardsEditHandler.getEditableCards(context, pack_manager, md_parser));
+        List<CardThumbnail> cards = PacksCardsEditHandler.getEditableCards(context, pack_manager, md_parser);
+        if (cards == null) {
+            return;
+        }
+        model.put("cards", cards);
         Renderer.render(context, "/templates/card/card_delete_select.ftl", model);
     }
 }

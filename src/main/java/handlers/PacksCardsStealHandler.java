@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PacksStealHandler implements Handler {
+public class PacksCardsStealHandler implements Handler {
     private final MarkdownHTML md_parser;
     private final PackManager pack_manager;
 
-    public PacksStealHandler(PackManager pack_manager, MarkdownHTML md_parser) {
+    public PacksCardsStealHandler(PackManager pack_manager, MarkdownHTML md_parser) {
         this.md_parser = md_parser;
         this.pack_manager = pack_manager;
     }

@@ -39,12 +39,12 @@ public class PacksCardsMoveApiHandler implements Handler {
             return;
         }
 
-        int dest_id = PacksStealApiHandler.getDestID(context, pack_manager, user_id, pack_id.getID());
+        int dest_id = PacksCardsStealApiHandler.getDestID(context, pack_manager, user_id, pack_id.getID());
         if (dest_id == -1) {
             return;
         }
 
-        List<Integer> card_ids = PacksStealApiHandler.getCardIDs(context, pack_manager, pack_id.getID());
+        List<Integer> card_ids = PacksCardsStealApiHandler.getCardIDs(context, pack_manager, pack_id.getID());
         if (card_ids == null) {
             return;
         }

@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.*;
 
-public class PacksStealSelectHandler implements Handler {
+public class PacksCardsStealSelectHandler implements Handler {
     private final PackManager pack_manager;
 
-    public PacksStealSelectHandler(PackManager pack_manager) {
+    public PacksCardsStealSelectHandler(PackManager pack_manager) {
         this.pack_manager = pack_manager;
     }
 

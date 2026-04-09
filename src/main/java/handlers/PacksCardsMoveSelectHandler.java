@@ -21,12 +21,12 @@ public class PacksCardsMoveSelectHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        Pair<Integer, Integer> pack_user_id = PacksStealSelectHandler.getPackAndUserID(context, pack_manager);
+        Pair<Integer, Integer> pack_user_id = PacksCardsStealSelectHandler.getPackAndUserID(context, pack_manager);
         if (pack_user_id == null) {
             return;
         }
 
-        List<PackThumbnail> packs = PacksStealSelectHandler.getPacks(pack_manager, pack_user_id.getA(), pack_user_id.getB());
+        List<PackThumbnail> packs = PacksCardsStealSelectHandler.getPacks(pack_manager, pack_user_id.getA(), pack_user_id.getB());
 
         Map<String, Object> model = new HashMap<>();
         model.put("packs", packs);

@@ -196,7 +196,6 @@ body {
     width: 100%;
     text-align: center;
     padding: 10px;
-    background-color: var(--aog-color);
     color: #000000;
     border-radius: 10px;
     align-items: center;
@@ -212,15 +211,17 @@ body {
     width: 100%;
     text-align: center;
     padding: 10px;
+    background-color: var(--aog-color);
     color: #000000;
     border-radius: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: safe center;
     flex-direction: column;
     transition: all 0.1s ease-in-out;
     box-shadow: 4px 4px 1px rgba(0, 0, 0, 0.5);
     outline: white solid 0;
     position: relative;
+    overflow-y: scroll;
 }
 
 .card:hover {
@@ -333,14 +334,21 @@ body {
     width: 100%;
 }
 
-.generic-container {
+.generic-container, .spacious-container {
     background-color: rgba(255, 255, 255, 0.25);
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
-    width: 50%;
     height: 100%;
     color: white;
+}
+
+.generic-container {
+    width: 50%;
+}
+
+.spacious-container {
+    width: 70%;
 }
 
 .pack-display {
@@ -442,8 +450,8 @@ body {
 }
 
 .form-checkbox input {
-    width: auto;
-    height: 1.5rem;
+    width: 1rem;
+    height: 1rem;
 }
 
 .form-error label input {
@@ -512,4 +520,64 @@ body {
 
 .delete-button:hover {
     background: red !important;
+}
+
+@media only screen and (orientation: portrait) {
+    #content {
+        width: 95%;
+    }
+
+    body {
+        font-size: x-large;
+    }
+
+    .packs-container, #cards-container {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #game-container {
+        width: 100%;
+    }
+
+    .generic-container {
+        width: 70%;
+    }
+
+    .spacious-container {
+        width: 100%;
+    }
+
+    .form-submit input {
+        font-size: x-large !important;
+    }
+
+    .form-button {
+        font-size: x-large !important;
+    }
+
+    .form input {
+        font-size: x-large !important;
+    }
+
+    .form select {
+        font-size: x-large !important;
+    }
+
+    .form textarea {
+        font-size: x-large !important;
+    }
+
+    .delete-button {
+        font-size: x-large !important;
+    }
+
+    .spotlight button {
+        font-size: x-large !important;
+    }
+
+    .form-checkbox input {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
 }

@@ -24,7 +24,7 @@ public class PacksCardsMoveHandler implements Handler {
 
     @Override
     public void handle(@NotNull Context context) throws Exception {
-        Pair<Integer, Integer> user_dest_id = PacksStealHandler.getUserDestID(context, pack_manager);
+        Pair<Integer, Integer> user_dest_id = PacksCardsStealHandler.getUserDestID(context, pack_manager);
         if (user_dest_id == null) {
             return;
         }

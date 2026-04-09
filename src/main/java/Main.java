@@ -69,8 +69,8 @@ public class Main {
         app.get("/packs/{pack_id}/edit/", new PacksEditHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/create/", new PacksCardsCreateHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/quiz/", new PacksQuizHandler(pack_manager));
-        app.get("/packs/{pack_id}/steal/select/", new PacksStealSelectHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
-        app.get("/packs/{pack_id}/steal/", new PacksStealHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/cards/steal/select/", new PacksCardsStealSelectHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.get("/packs/{pack_id}/cards/steal/", new PacksCardsStealHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/move/select/", new PacksCardsMoveSelectHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/move/", new PacksCardsMoveHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
         app.get("/packs/{pack_id}/cards/edit/", new PacksCardsEditHandler(pack_manager, md_parser), AogRole.USER, AogRole.ADMIN);
@@ -89,7 +89,7 @@ public class Main {
         app.post("/forms/packs/create/", new PacksCreateApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/edit", new PacksEditApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/cards/create/", new PacksCardsCreateApiHandler(pack_manager, card_manager), AogRole.USER, AogRole.ADMIN);
-        app.post("/forms/packs/{pack_id}/steal/", new PacksStealApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
+        app.post("/forms/packs/{pack_id}/cards/steal/", new PacksCardsStealApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/quiz/start/", new PacksQuizStartApiHandler(pack_manager));
         app.post("/forms/packs/{pack_id}/delete/", new PacksDeleteApiHandler(pack_manager), AogRole.USER, AogRole.ADMIN);
         app.post("/forms/packs/{pack_id}/spotlights/create", new PacksSpotlightCreateApiHandler(spotlight_manager, pack_manager), AogRole.USER, AogRole.ADMIN);

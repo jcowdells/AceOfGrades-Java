@@ -11,10 +11,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacksStealApiHandler implements Handler {
+public class PacksCardsStealApiHandler implements Handler {
     private final PackManager pack_manager;
 
-    public PacksStealApiHandler(PackManager pack_manager) {
+    public PacksCardsStealApiHandler(PackManager pack_manager) {
         this.pack_manager = pack_manager;
     }
 

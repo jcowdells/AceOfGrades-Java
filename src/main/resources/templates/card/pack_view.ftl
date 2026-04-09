@@ -40,7 +40,7 @@
             <div class="left-content generic-container">
                 <h3>Steal</h3>
                 <p>Click the button to steal cards from this pack.</p>
-                <@redirect_button "/packs/${pack_id}/steal/select" "Steal"></@redirect_button>
+                <@redirect_button "/packs/${pack_id}/cards/steal/select" "Steal"></@redirect_button>
             </div>
         </#if>
         <#if is_creator>

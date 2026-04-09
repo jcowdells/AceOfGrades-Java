@@ -1,16 +1,5 @@
 <#include "/common/base.ftl">
+<#include "/common/forms/card/pack_list.ftl">
 <@content>
-    <div class="packs-center">
-        <h2><u>Choose a pack</u></h2>
-        <div><br></div>
-        <div class="packs-container">
-            <#list packs as pack>
-                <div class="pack" style="background: ${pack.getFrontColor()}">
-                    <a href="/packs/${pack.getID()}">${pack.getName()}</a>
-                    <p>${pack.getDescription()}</p><br>
-                    <small>Created by: ${pack.getCreator()}</small>
-                </div>
-            </#list>
-        </div>
-    </div>
+    <@pack_list "Choose a pack" "/packs/$(pack_id)"></@pack_list>
 </@content>

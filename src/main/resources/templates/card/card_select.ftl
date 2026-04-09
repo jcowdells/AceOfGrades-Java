@@ -1,5 +1,6 @@
 <#include "/common/base.ftl">
+<#include "/common/forms/card/card_select_list.ftl">
 <@content>
-    <#include "/common/forms/card/card_select.ftl">
-    <script src="/static/card_select.js"></script>
+    <@card_select_list "Select cards to steal" "/forms/packs/${pack_id}/cards/steal" "Steal cards"></@card_select_list>
 </@content>
+<script src="/static/card_select.js"></script>
