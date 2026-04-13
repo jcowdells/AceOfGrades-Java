@@ -168,7 +168,7 @@ body {
     border: 1px solid #000000;
 }
 
-.packs-container, #cards-container {
+#packs-container, #cards-container {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
@@ -531,7 +531,7 @@ body {
         font-size: x-large;
     }
 
-    .packs-container, #cards-container {
+    #packs-container, #cards-container {
         width: 100%;
         grid-template-columns: repeat(2, 1fr);
     }

@@ -61,7 +61,7 @@ public class PackManager implements DBManager {
         }
     }
 
-    public void createPack(int creator_id, String name, String description, String front_color, String back_color, boolean is_public) throws SQLException {
+    public int createPack(int creator_id, String name, String description, String front_color, String back_color, boolean is_public) throws SQLException {
         int pack_id;
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
@@ -77,7 +77,7 @@ public class PackManager implements DBManager {
             p_statement.executeUpdate();
             ResultSet result = p_statement.getGeneratedKeys();
             if (!result.next())
-                return;
+                return -1;
             pack_id = result.getInt(1);
         }
         try (Connection connection = data_source.getConnection()) {
@@ -88,6 +88,7 @@ public class PackManager implements DBManager {
             p_statement.setInt(2, creator_id);
             p_statement.executeUpdate();
         }
+        return pack_id;
     }
 
     public void updatePack(int pack_id, String name, String description, String front_color, String back_color, boolean is_public) throws SQLException {

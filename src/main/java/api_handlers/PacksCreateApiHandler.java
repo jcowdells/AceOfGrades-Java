@@ -35,11 +35,17 @@ public class PacksCreateApiHandler implements Handler {
             return;
         }
 
-        pack_manager.createPack(
-                pack.getCreatorID(),
+        int pack_id = pack_manager.createPack(
+                user_id,
                 pack.getName(), pack.getDescription(),
                 pack.getFrontColor(), pack.getBackColor(),
                 pack.isPublic()
         );
+        if (pack_id == -1) {
+            Renderer.renderHXError(context, "Failed to create pack.");
+            return;
+        }
+
+        context.header("HX-Redirect", String.format("/packs/%d", pack_id));
     }
 }

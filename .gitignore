@@ -46,3 +46,6 @@ aog.sqlite3
 
 ### jar ###
 /out/artifacts/AceOfGrades_jar/AceOfGrades.jar
+
+### shell ###
+push.sh

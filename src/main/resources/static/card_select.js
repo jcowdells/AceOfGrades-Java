@@ -1,4 +1,4 @@
-const cards_container = document.getElementById("cards-container")
+const cards_container = document.getElementById("cards-container");
 
 let selected_cards = new Set();
 let last_clicked = null;
