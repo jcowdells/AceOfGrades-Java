@@ -3,14 +3,12 @@
     <div class="spacious-container">
         <h2><u>${title}</u></h2>
         <div class="packs-center">
-            <div class="packs-center">
-                <div class="packs-container">
-                    <#list cards as card>
-                        <div class="card" style="background: ${card.getFrontColor()}" onclick="window.location.href='${button_redirect?replace("$(id)", card.getID()?string)}';">
-                            <p>${card.getFront()}</p>
-                        </div>
-                    </#list>
-                </div>
+            <div id="packs-container">
+                <#list cards as card>
+                    <div class="card" style="background: ${card.getFrontColor()}" onclick="window.location.href='${button_redirect?replace("$(id)", card.getID()?string)}';">
+                        <p>${card.getFront()}</p>
+                    </div>
+                </#list>
             </div>
         </div>
     </div>
