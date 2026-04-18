@@ -8,13 +8,13 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <title>aceofgrad.es</title>
+    <title>AceOfGrades</title>
 </head>
 <body>
 <div id="navbar">
     <ul>
-        <li style="left: 0; position: absolute">
-            <a href="/">🃏 aceofgrad.es 🃏</a>
+        <li style="left: 0; top: 0; bottom: 0; position: absolute; padding: 0; width: auto">
+            <img src="/static/aceofgrades.png" alt="🃏 aceofgrad.es 🃏" onclick="" style="position: relative; height: 100%; width: auto; padding: 5px 10px 7px 10px">
         </li>
         <li>
             <a href="/">Home</a>
