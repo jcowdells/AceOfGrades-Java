@@ -9,6 +9,7 @@ import db.CardManager;
 import db.PackManager;
 import db.SpotlightManager;
 import db.UserManager;
+import freemarker.core.HTMLOutputFormat;
 import freemarker.template.Configuration;
 import handlers.*;
 import io.javalin.Javalin;
@@ -42,6 +43,8 @@ public class Main {
                     "/"
             );
             fm_config.setBooleanFormat("c");
+            fm_config.setOutputFormat(HTMLOutputFormat.INSTANCE);
+            fm_config.setAutoEscapingPolicy(Configuration.ENABLE_IF_SUPPORTED_AUTO_ESCAPING_POLICY);
             config.fileRenderer(new JavalinFreemarker(fm_config));
             config.staticFiles.add(static_files -> {
                 static_files.hostedPath = "/static";
@@ -80,6 +83,7 @@ public class Main {
         app.get("/cards/{card_id}/edit/", new CardsEditHandler(card_manager, pack_manager), AogRole.USER, AogRole.ADMIN);
         app.get("/cards/{card_id}/delete/", new CardsDeleteHandler(card_manager, md_parser), AogRole.USER, AogRole.ADMIN);
         app.get("/profiles/{user_id}/", new ProfilesHandler(user_manager, card_manager, md_parser));
+        app.get("/leaderboard/", new LeaderboardHandler(user_manager));
 
         // all api shenanigans
         // forms

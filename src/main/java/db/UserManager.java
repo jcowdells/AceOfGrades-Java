@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import aog.User;
+import aog.UserLeaderboard;
 import aog.UserStats;
 import auth.AogRole;
 import org.mindrot.jbcrypt.BCrypt;
@@ -192,6 +193,24 @@ public class UserManager implements DBManager {
                     num_attempts, num_correct,
                     best_card, worst_card
             );
+        }
+    }
+
+    public List<UserLeaderboard> getLeaderboard() throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            List<UserLeaderboard> leaderboard = new ArrayList<>();
+            try (PreparedStatement p_statement = connection.prepareStatement(
+                    "SELECT username, SUM(attempts) AS num FROM tblCardStats INNER JOIN tblUser ON id = user_id GROUP BY id ORDER BY num DESC"
+            )) {
+                ResultSet result = p_statement.executeQuery();
+                while (result.next()) {
+                    leaderboard.add(new UserLeaderboard(
+                            result.getString(1),
+                            result.getInt(2)
+                    ));
+                }
+            }
+            return leaderboard;
         }
     }
 }
