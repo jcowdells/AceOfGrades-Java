@@ -6,7 +6,7 @@
             <div id="packs-container">
                 <#list cards as card>
                     <div class="card" style="background: ${card.getFrontColor()}" onclick="window.location.href='${button_redirect?replace("$(id)", card.getID()?string)}';">
-                        <p>${card.getFront()}</p>
+                        <p>${card.getFront()?no_esc}</p>
                     </div>
                 </#list>
             </div>

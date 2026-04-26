@@ -107,6 +107,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 1.2rem;
 }
 
 #card {
@@ -123,9 +124,6 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-}
-
-#card-front, #card-back, #edit-front, #edit-back {
     top: 0;
     left: 0;
     width: 100%;
@@ -133,7 +131,6 @@ body {
     backface-visibility: hidden;
     transition: all 1.0s ease-in-out;
     border-radius: 10px;
-    font-size: 1rem;
     padding: 20px;
 }
 
@@ -142,11 +139,7 @@ body {
 }
 
 #card-next {
-    width: 80%;
-    height: 80%;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    padding: 16px;
+    transform: scale(0.8);
 }
 
 #card-back, #edit-back {
@@ -169,8 +162,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     border-radius: 5px;
     border: 1px solid #000000;
+    padding: 5px;
 }
 
 #packs-container, #cards-container {
@@ -527,6 +522,16 @@ body {
     background: red !important;
 }
 
+.mobile-hide {
+    visibility: visible;
+    display: inline-block !important;
+}
+
+.desktop-hide {
+    visibility: hidden;
+    display: none !important;
+}
+
 @media only screen and (orientation: portrait) {
     #content {
         width: 95%;
@@ -543,6 +548,10 @@ body {
 
     #game-container {
         width: 100%;
+    }
+
+    #card-container, #edit-container {
+        font-size: 1.8rem;
     }
 
     .generic-container {
@@ -573,6 +582,10 @@ body {
         font-size: x-large !important;
     }
 
+    #navbar li button {
+        font-size: x-large !important;
+    }
+
     .delete-button {
         font-size: x-large !important;
     }
@@ -584,5 +597,15 @@ body {
     .form-checkbox input {
         width: 2rem !important;
         height: 2rem !important;
+    }
+
+    .mobile-hide {
+        visibility: hidden;
+        display: none !important;
+    }
+
+    .desktop-hide {
+        visibility: visible;
+        display: inline-block !important;
     }
 }

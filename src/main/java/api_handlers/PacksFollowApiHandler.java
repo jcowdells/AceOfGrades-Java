@@ -1,0 +1,36 @@
+package api_handlers;
+
+import aog.Renderer;
+import core.Identifier;
+import db.PackManager;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
+import org.jetbrains.annotations.NotNull;
+
+public class PacksFollowApiHandler implements Handler {
+    private final PackManager pack_manager;
+
+    public PacksFollowApiHandler(PackManager pack_manager) {
+        this.pack_manager = pack_manager;
+    }
+
+    @Override
+    public void handle(@NotNull Context context) throws Exception {
+        System.out.println("Hi");
+
+        Integer user_id = context.sessionAttribute("user_id");
+        if (user_id == null) {
+            return;
+        }
+
+        Identifier pack_id = new Identifier(
+                context, pack_manager,
+                "pack_id", "pack",
+                user_id
+        );
+        if (pack_id.hasFailed()) {
+            return;
+        }
+        pack_manager.followPack(user_id, pack_id.getID());
+    }
+}

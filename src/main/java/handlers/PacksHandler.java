@@ -27,7 +27,7 @@ public class PacksHandler implements Handler {
             return;
         }
 
-        List<PackThumbnail> packs = pack_manager.getUserCreatedPacks(user_id);
+        List<PackThumbnail> packs = pack_manager.getUserPacks(user_id);
         packs.sort(Comparator.comparing(p -> p.getName().toLowerCase() + p.getDescription().toLowerCase()));
         Map<String, Object> model = new HashMap<>();
         model.put("packs", packs);

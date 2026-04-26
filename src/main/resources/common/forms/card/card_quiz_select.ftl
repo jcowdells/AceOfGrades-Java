@@ -27,23 +27,27 @@
         <label for="num-cards">Choose the pile size:</label>
         <input type="number" id="num-cards" name="num-cards" min="0" max="${num_cards}" value="${num_cards}">
     </div>
-    <div>
-        <h4>Spotlights</h4>
-        <p>Spotlights are a curated subset of a pack that focuses on a particular part of a topic; they tend to be small, bite-sized, 5 minute activities to refresh your memory on that topic.</p>
-    </div>
-    <div id="spotlights">
-        <#list spotlights as spotlight>
-            <div class="spotlight">
-                <span>
-                    <button class="delete-button" data-spotlight-id="${spotlight.getID()}">X</button>
-                </span>
-                <button type="submit" name="spotlight" value="${spotlight.getID()}" style="padding-right: 1.5rem">${spotlight.getName()}</button>
-            </div>
-        </#list>
-        <div class="spotlight">
-            <button type="submit" name="new-spotlight" value="new-spotlight">Create new spotlight</button>
+    <#if is_creator || spotlights?has_content>
+        <div>
+            <h4>Spotlights</h4>
+            <p>Spotlights are a curated subset of a pack that focuses on a particular part of a topic; they tend to be small, bite-sized, 5 minute activities to refresh your memory on that topic.</p>
         </div>
-    </div>
+        <div id="spotlights">
+            <#list spotlights as spotlight>
+                <div class="spotlight">
+                    <span>
+                        <button class="delete-button" data-spotlight-id="${spotlight.getID()}">X</button>
+                    </span>
+                    <button type="submit" name="spotlight" value="${spotlight.getID()}" style="padding-right: 1.5rem">${spotlight.getName()}</button>
+                </div>
+            </#list>
+            <#if is_creator>
+                <div class="spotlight">
+                    <button type="submit" name="new-spotlight" value="new-spotlight">Create new spotlight</button>
+                </div>
+            </#if>
+        </div>
+    </#if>
     <@form_submit "Start quiz"></@form_submit>
 </form>
 <script src="/static/card_quiz_select.js"></script>

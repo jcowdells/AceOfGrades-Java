@@ -50,6 +50,8 @@ public class PacksViewHandler implements Handler {
         model.put("pack_id", pack_id.getID());
         model.put("num_cards", num_cards);
         model.put("spotlights", spotlights);
+        model.put("pack_name", pack_manager.getPackName(pack_id.getID()));
+        model.put("pack_description", pack_manager.getPackDescription(pack_id.getID()));
         Renderer.render(context, "/templates/card/pack_view.ftl", model);
     }
 }

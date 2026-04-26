@@ -287,9 +287,10 @@ public class PackManager implements DBManager {
     public List<PackThumbnail> getUserPacks(int user_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblPackLink ON tblPackLink.pack_id = tblPack.id INNER JOIN tblUser ON tblPack.creator_id = tblUser.id WHERE tblPackLink.user_id = ?"
+                    "SELECT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblPackLink ON tblPackLink.pack_id = tblPack.id INNER JOIN tblUser ON tblPack.creator_id = tblUser.id WHERE tblPack.creator_id = ? OR tblPackLink.user_id = ?"
             );
             p_statement.setInt(1, user_id);
+            p_statement.setInt(2, user_id);
             ResultSet result = p_statement.executeQuery();
             return getPackList(result);
         }
@@ -498,6 +499,17 @@ public class PackManager implements DBManager {
                 connection.rollback();
                 throw e;
             }
+        }
+    }
+
+    public void followPack(int user_id, int pack_id) throws SQLException {
+        try (Connection connection = data_source.getConnection()) {
+            PreparedStatement p_statement = connection.prepareStatement(
+                    "INSERT OR IGNORE INTO tblPackLink (pack_id, user_id) VALUES (?, ?)"
+            );
+            p_statement.setInt(1, pack_id);
+            p_statement.setInt(2, user_id);
+            p_statement.executeUpdate();
         }
     }
 }

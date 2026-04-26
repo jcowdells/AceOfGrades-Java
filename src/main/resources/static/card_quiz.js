@@ -53,48 +53,61 @@ function onLoadQuiz(cards_data) {
         card_next.style.transition = "all " + time + "s ease-in-out";
     }
 
+    function getTransform(el) {
+        let transform = el.style.transform;
+        if (transform.length === 0) return {
+            rotate: "0.0rad",
+            scale: "1.0"
+        }
+        const parts = transform.split("(");
+        const rotate = parts[1].split(")")[0];
+        const scale = parts[2].split(")")[0];
+        return {
+            rotate: rotate,
+            scale: scale
+        }
+    }
+
+    function setTransform(el, rotate, scale) {
+        el.style.transform = "rotateY(" + rotate + ") scale(" + scale + ")";
+    }
+
     function rotate() {
-        angle = spin_fraction * Math.PI;
-        card_front.style.transform = "rotateY(" + angle + "rad)";
-        card_back.style.transform = "rotateY(" + (angle + Math.PI) + "rad)";
+        const angle = spin_fraction * Math.PI;
+
+        const front_t = getTransform(card_front);
+        setTransform(card_front, angle + "rad", front_t.scale);
+
+        const back_t = getTransform(card_back);
+        setTransform(card_back, (angle + Math.PI) + "rad", back_t.scale);
     }
 
     function move(x, y) {
         card_front.style.left = x + "px";
-        card_back.style.top = y + "px";
+        card_front.style.top = y + "px";
         card_back.style.left = x + "px";
         card_back.style.top = y + "px";
     }
 
-    function resize(width, height) {
-        card_front.style.width = width + "px";
-        card_back.style.height = height + "px";
-        card_back.style.width = width + "px";
-        card_back.style.height = height + "px";
+    function resize(fraction) {
+        const front_t = getTransform(card_front);
+        setTransform(card_front, front_t.rotate, fraction);
+
+        const back_t = getTransform(card_back);
+        setTransform(card_back, back_t.rotate, fraction);
     }
 
     function resetSize() {
-        card_front.style.width = "100%";
-        card_front.style.height = "100%";
-        card_back.style.width = "100%";
-        card_back.style.height = "100%";
+        resize(1.0);
     }
 
-    function resizeNext(percent) {
-        card_next.style.width = percent + "%";
-        card_next.style.height = percent + "%";
-        card_next.style.fontSize = (percent / 100) + "rem";
-    }
-
-    function setFontSize(font_size) {
-        card_front.style.fontSize = font_size + "rem";
-        card_back.style.fontSize = font_size + "rem";
+    function resizeNext(fraction) {
+        card_next.style.transform = "scale(" + fraction + ")";
     }
 
     function finishPack() {
         if (post_results) {
             const pack_id = document.getElementById("game-container").getAttribute("data-pack-id");
-            console.log(quiz_data);
             fetch(
                 `/api/packs/${pack_id}/quiz/complete`, {
                     method: "POST",
@@ -180,14 +193,27 @@ function onLoadQuiz(cards_data) {
         transitioning = true;
         let stack_rect = stack.getBoundingClientRect();
         let card_rect = card_container.getBoundingClientRect();
-        let font_size = stack_rect.height / card_rect.height;
+        let card_font_size = getComputedStyle(card_container).fontSize;
+        let font_size = (stack_rect.height / card_rect.height) * Number(card_font_size.replace("px", ""));
+
+        console.log(font_size);
 
         // set card transition in motion
         transition(1);
-        move(stack_rect.left - card_rect.left, stack_rect.top - card_rect.top);
-        resize(stack_rect.width, stack_rect.height);
-        resizeNext(100);
-        setFontSize(font_size);
+
+        const stack_mx = stack_rect.left + stack_rect.right;
+        const stack_my = stack_rect.top + stack_rect.bottom;
+        const card_mx = card_rect.left + card_rect.right;
+        const card_my = card_rect.top + card_rect.bottom;
+
+        const target_x = (stack_mx - card_mx) * 0.5;
+        const target_y = (stack_my - card_my) * 0.5;
+
+        move(target_x, target_y);
+
+        const resize_fraction = stack_rect.width / card_rect.width;
+        resize(resize_fraction);
+        resizeNext(1.0);
 
         // set stack styles
         stack.style.border = "none";
@@ -207,14 +233,13 @@ function onLoadQuiz(cards_data) {
             rotate();
             move(0, 0);
             resetSize();
-            setFontSize(1);
 
             // set stack styles
             stack.replaceChildren(...card_back.cloneNode(true).childNodes);
-            stack.style.fontSize = font_size + "rem";
+            stack.style.fontSize = font_size + "px";
             stack.style.background = card_back.style.background;
 
-            resizeNext(80);
+            resizeNext(0.8);
 
             switchToNextCard();
             }, 1000);

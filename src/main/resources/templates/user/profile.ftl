@@ -30,15 +30,15 @@
                  attempted <b>${user_stats.getNumAttempts()} card<#if user_stats.getNumAttempts() != 1>s</#if></b>,
                 with <b>${user_stats.getNumCorrect()}</b> of those attempts being correct.
             </p>
-            <#if is_owner>
+            <#if is_owner && has_cards>
                 <div style="width: 70%">
                     <h3><u>Your best card</u></h3>
                     <div class="card prevent-select" style="background: ${best_card.getFrontColor()}" onclick="window.location.href='/packs/${best_card_pack}';">
-                        <p>${best_card.getFront()}</p>
+                        <p>${best_card.getFront()?no_esc}</p>
                     </div>
                     <h3><u>Your worst card</u></h3>
                     <div class="card prevent-select" style="background: ${worst_card.getFrontColor()}" onclick="window.location.href='/packs/${worst_card_pack}';">
-                        <p>${worst_card.getFront()}</p>
+                        <p>${worst_card.getFront()?no_esc}</p>
                     </div>
                 </div>
             </#if>

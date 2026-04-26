@@ -48,18 +48,23 @@ public class ProfilesHandler implements Handler {
             Card best_card = card_manager.getCard(user_stats.getBestCard());
             Card worst_card = card_manager.getCard(user_stats.getWorstCard());
 
-            model.put("best_card", new CardThumbnail(
-                    best_card.getID(),
-                    md_parser.markdownToHTML(best_card.getFront()),
-                    best_card.getFrontColor()
-            ));
-            model.put("best_card_pack", card_manager.getPackID(best_card.getID()));
-            model.put("worst_card", new CardThumbnail(
-               worst_card.getID(),
-               md_parser.markdownToHTML(worst_card.getFront()),
-               worst_card.getFrontColor()
-            ));
-            model.put("worst_card_pack", card_manager.getPackID(worst_card.getID()));
+            if (best_card == null || worst_card == null) {
+                model.put("has_cards", false);
+            } else {
+                model.put("has_cards", true);
+                model.put("best_card", new CardThumbnail(
+                        best_card.getID(),
+                        md_parser.markdownToHTML(best_card.getFront()),
+                        best_card.getFrontColor()
+                ));
+                model.put("best_card_pack", card_manager.getPackID(best_card.getID()));
+                model.put("worst_card", new CardThumbnail(
+                        worst_card.getID(),
+                        md_parser.markdownToHTML(worst_card.getFront()),
+                        worst_card.getFrontColor()
+                ));
+                model.put("worst_card_pack", card_manager.getPackID(worst_card.getID()));
+            }
         }
 
         Renderer.render(context, "/templates/user/profile.ftl", model);

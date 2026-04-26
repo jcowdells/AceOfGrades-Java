@@ -13,10 +13,13 @@
 <body>
 <div id="navbar">
     <ul>
-        <li style="left: 0; top: 0; bottom: 0; position: absolute; padding: 0; width: auto">
-            <img src="/static/aceofgrades.png" alt="🃏 aceofgrad.es 🃏" onclick="" style="position: relative; height: 100%; width: auto; padding: 5px 10px 7px 10px">
+        <li class="mobile-hide" style="left: 0; top: 0; bottom: 0; position: absolute; padding: 0; width: auto" onclick="window.location.href='/';">
+            <img src="/static/aceofgrades.png" alt="🃏 aceofgrad.es 🃏" style="position: relative; height: 100%; width: auto; padding: 5px 10px 7px 10px">
         </li>
-        <li>
+        <li class="desktop-hide" style="left: 0; top: 0; bottom: 0; position: absolute; padding: 0; width: auto" onclick="window.location.href='/';">
+            <img src="/static/aceofgrades_mobile.png" alt="🃏 aceofgrad.es 🃏" style="position: relative; height: 100%; width: auto; padding: 5px 10px 7px 10px">
+        </li>
+        <li class="mobile-hide" >
             <a href="/">Home</a>
         </li>
         <li>

@@ -3,6 +3,10 @@
 <@content>
     <div class="centre-wide">
         <div class="generic-container">
+            <h3>${pack_name}</h3>
+            <p>${pack_description}</p>
+        </div>
+        <div class="generic-container">
             <h3>Quiz</h3>
             <#include "/common/forms/card/card_quiz_select.ftl">
         </div>
@@ -29,14 +33,27 @@
                 <p>Click the button to find cards to add to this pack.</p>
                 <@redirect_button "/explore" "Find cards"></@redirect_button>
             </div>
-        <#else>
-            <div class="left-content generic-container">
-                <h3>Follow</h3>
-                <p>Click the button to add this pack to your collection.</p>
-                <@redirect_button "/" "Follow"></@redirect_button>
-            </div>
         </#if>
         <#if user.role != "ANYONE">
+            <#if !is_creator>
+                <div class="left-content generic-container">
+                    <h3>Follow</h3>
+                    <p>Click the button to add this pack to your collection.</p>
+                    <button id="follow-button" class="form-button">
+                        Follow
+                    </button>
+                    <script>
+                        const follow_button = document.getElementById("follow-button");
+                        follow_button.addEventListener("click", (event) => {
+                            fetch(
+                                "/forms/packs/${pack_id}/follow/", {
+                                    method: "POST"
+                                }
+                            )
+                        })
+                    </script>
+                </div>
+            </#if>
             <div class="left-content generic-container">
                 <h3>Steal</h3>
                 <p>Click the button to steal cards from this pack.</p>
