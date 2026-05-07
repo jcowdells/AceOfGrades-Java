@@ -200,13 +200,14 @@ public class UserManager implements DBManager {
         try (Connection connection = data_source.getConnection()) {
             List<UserLeaderboard> leaderboard = new ArrayList<>();
             try (PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT username, SUM(attempts) AS num FROM tblCardStats INNER JOIN tblUser ON id = user_id GROUP BY id ORDER BY num DESC"
+                    "SELECT username, SUM(attempts) AS num, id FROM tblCardStats INNER JOIN tblUser ON id = user_id GROUP BY id ORDER BY num DESC"
             )) {
                 ResultSet result = p_statement.executeQuery();
                 while (result.next()) {
                     leaderboard.add(new UserLeaderboard(
                             result.getString(1),
-                            result.getInt(2)
+                            result.getInt(2),
+                            result.getInt(3)
                     ));
                 }
             }

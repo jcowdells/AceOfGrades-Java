@@ -134,6 +134,11 @@ body {
     padding: 20px;
 }
 
+#card-front ul, #card-back ul {
+    list-style-position: inside;
+}
+
+
 #card-front textarea, #card-back textarea, #edit-front textarea, #edit-back textarea {
     color: black;
 }

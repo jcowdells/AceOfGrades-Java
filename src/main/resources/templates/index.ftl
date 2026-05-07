@@ -11,7 +11,25 @@
         </div>
         <div class="generic-container">
             <h2>AceOfGrades Development Noticeboard</h2>
+            <br>
             <div style="width: 100%">
+                <hr style="color: white">
+                <h3>Change Log - 7/5/26</h3>
+                <p>Mini update for today:</p>
+                <ul style="list-style-position: inside">
+                    <li>
+                        Fixed the duplication of packs that sometimes happened in the "packs" page.
+                    </li>
+                    <li>
+                        Added hyperlinks to usernames in the "leaderboard" page to allow you to view the users' profiles.
+                    </li>
+                    <li>
+                        Permanently banned <a href="/profiles/3">@BigSidSenior</a>.
+                    </li>
+                </ul>
+                <p>Happy acing!</p>
+                <p>- legendmixer</p>
+                <br>
                 <hr style="color: white">
                 <h3>Change Log - 26/4/26</h3>
                 <p>Hello acers! Quick update for you all.</p>
@@ -42,6 +60,7 @@
                     </li>
                 </ul>
                 <p>- legendmixer</p>
+                <br>
             </div>
             <hr style="color: white">
         </div>

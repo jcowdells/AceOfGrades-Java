@@ -6,7 +6,7 @@
         <ol style="list-style-position: inside">
             <#list leaderboard as lb>
                 <li>
-                    ${lb.getUsername()} - ${lb.getNumCards()} cards
+                    <a href="/profiles/${lb.getUserID()}">${lb.getUsername()}</a> - ${lb.getNumCards()} cards
                 </li>
             </#list>
         </ol>

@@ -287,7 +287,7 @@ public class PackManager implements DBManager {
     public List<PackThumbnail> getUserPacks(int user_id) throws SQLException {
         try (Connection connection = data_source.getConnection()) {
             PreparedStatement p_statement = connection.prepareStatement(
-                    "SELECT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblPackLink ON tblPackLink.pack_id = tblPack.id INNER JOIN tblUser ON tblPack.creator_id = tblUser.id WHERE tblPack.creator_id = ? OR tblPackLink.user_id = ?"
+                    "SELECT DISTINCT tblPack.id, name, description, front_color, back_color, username FROM tblPack INNER JOIN tblPackLink ON tblPackLink.pack_id = tblPack.id INNER JOIN tblUser ON tblPack.creator_id = tblUser.id WHERE tblPack.creator_id = ? OR tblPackLink.user_id = ?"
             );
             p_statement.setInt(1, user_id);
             p_statement.setInt(2, user_id);
