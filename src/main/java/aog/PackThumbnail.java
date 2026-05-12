@@ -7,6 +7,8 @@ public class PackThumbnail {
     private final String front_color;
     private final String back_color;
     private final String creator;
+    private final String front_text_color;
+    private final String back_text_color;
 
     public PackThumbnail(int id, String name, String description, String front_color, String back_color, String creator) {
         this.id = id;
@@ -14,6 +16,8 @@ public class PackThumbnail {
         this.description = description;
         this.front_color = front_color;
         this.back_color = back_color;
+        this.front_text_color = Card.getOptimalTextColor(front_color);
+        this.back_text_color = Card.getOptimalTextColor(back_color);
         this.creator = creator;
     }
 
@@ -39,5 +43,13 @@ public class PackThumbnail {
 
     public String getCreator() {
         return creator;
+    }
+
+    public String getFrontTextColor() {
+        return front_text_color;
+    }
+
+    public String getBackTextColor() {
+        return back_text_color;
     }
 }

@@ -83,6 +83,7 @@ public class PacksCardsStealHandler implements Handler {
                     card_thumbnail.getID(),
                     md_parser.markdownToHTML(card_thumbnail.getFront()),
                     card_thumbnail.getFrontColor(),
+                    card_thumbnail.getFrontTextColor(),
                     selected
             ));
         }

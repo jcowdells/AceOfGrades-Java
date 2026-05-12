@@ -4,10 +4,10 @@
         <div class="arrange-containers-across">
             <div class="left-content pack-display">
                 <label>Adding to pack:</label>
-                <div class="pack-thumbnail" style="background: ${form.getFrontColor().input}">
+                <div class="pack-thumbnail" style="background: ${form.getFrontColor().input}; color: ${front_text_color}">
                     <h3>${pack_name}</h3>
                 </div>
-                <div class="pack-thumbnail" style="background: ${form.getBackColor().input}">
+                <div class="pack-thumbnail" style="background: ${form.getBackColor().input}; color: ${back_text_color}">
                     <h4>${pack_description}</h4>
                 </div>
             </div>

@@ -50,7 +50,8 @@ public class PacksCardsEditHandler implements Handler {
             card_thumbnails.add(new CardThumbnail(
                     card.getID(),
                     md_parser.markdownToHTML(card.getFront()),
-                    card.getFrontColor()
+                    card.getFrontColor(),
+                    card.getFrontTextColor()
             ));
         }
 

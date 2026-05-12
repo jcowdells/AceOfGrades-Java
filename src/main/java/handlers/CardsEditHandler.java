@@ -40,6 +40,8 @@ public class CardsEditHandler implements Handler {
         model.put("card_id", card_id);
         model.put("pack_name", pack_name);
         model.put("pack_description", pack_description);
+        model.put("front_text_color", Card.getOptimalTextColor(card.getFrontColor()));
+        model.put("back_text_color", Card.getOptimalTextColor(card.getBackColor()));
         Renderer.render(context, template, model);
     }
 

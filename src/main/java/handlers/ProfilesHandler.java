@@ -55,13 +55,15 @@ public class ProfilesHandler implements Handler {
                 model.put("best_card", new CardThumbnail(
                         best_card.getID(),
                         md_parser.markdownToHTML(best_card.getFront()),
-                        best_card.getFrontColor()
+                        best_card.getFrontColor(),
+                        best_card.getFrontTextColor()
                 ));
                 model.put("best_card_pack", card_manager.getPackID(best_card.getID()));
                 model.put("worst_card", new CardThumbnail(
                         worst_card.getID(),
                         md_parser.markdownToHTML(worst_card.getFront()),
-                        worst_card.getFrontColor()
+                        worst_card.getFrontColor(),
+                        worst_card.getFrontTextColor()
                 ));
                 model.put("worst_card_pack", card_manager.getPackID(worst_card.getID()));
             }

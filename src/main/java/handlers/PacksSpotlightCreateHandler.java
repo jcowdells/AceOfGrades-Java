@@ -39,7 +39,8 @@ public class PacksSpotlightCreateHandler implements Handler {
             card_thumbnails.add(new CardThumbnail(
                     card_thumbnail.getID(),
                     md_parser.markdownToHTML(card_thumbnail.getFront()),
-                    card_thumbnail.getFrontColor()
+                    card_thumbnail.getFrontColor(),
+                    card_thumbnail.getFrontTextColor()
             ));
         }
         model.put("pack_id", pack_id);

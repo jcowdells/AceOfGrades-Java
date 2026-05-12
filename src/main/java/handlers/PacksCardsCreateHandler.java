@@ -1,5 +1,6 @@
 package handlers;
 
+import aog.Card;
 import aog.Renderer;
 import core.Identifier;
 import core.Pair;
@@ -45,6 +46,8 @@ public class PacksCardsCreateHandler implements Handler {
         String pack_description = pack_manager.getPackDescription(pack_id.getID());
         model.put("pack_name", pack_name);
         model.put("pack_description", pack_description);
+        model.put("front_text_color", Card.getOptimalTextColor(pack_colors.getA()));
+        model.put("back_text_color", Card.getOptimalTextColor(pack_colors.getB()));
         Renderer.render(context, "/templates/card/card_create.ftl", model);
     }
 

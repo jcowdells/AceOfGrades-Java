@@ -13,10 +13,10 @@
             </div>
             <div id="edit-container" class="form">
                 <div id="edit-front">
-                    <textarea id="front" name="front">${form.getFront().input}</textarea>
+                    <textarea id="front" name="front" style="color: ${front_text_color}">${form.getFront().input}</textarea>
                 </div>
                 <div id="edit-back">
-                    <textarea id="back" name="back">${form.getBack().input}</textarea>
+                    <textarea id="back" name="back" style="color: ${back_text_color}">${form.getBack().input}</textarea>
                 </div>
             </div>
         </div>

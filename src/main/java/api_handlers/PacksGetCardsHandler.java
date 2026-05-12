@@ -145,8 +145,11 @@ public class PacksGetCardsHandler implements Handler {
             card_json.put("front", md_parser.markdownToHTML(card.getFront()));
             card_json.put("back", md_parser.markdownToHTML(card.getBack()));
 
+            card_json.put("front-text-color", card.getFrontTextColor());
+            card_json.put("back-text-color", card.getBackTextColor());
+
             // add ownership details
-            card_json.put("is-owner", user_id != null && card.getCreatorID() == user_id);
+            card_json.put("is-owner", (user_id != null) && (card.getCreatorID() == user_id));
 
             card_json_list.add(card_json);
         }

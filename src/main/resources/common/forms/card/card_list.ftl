@@ -5,7 +5,7 @@
         <div class="packs-center">
             <div id="packs-container">
                 <#list cards as card>
-                    <div class="card" style="background: ${card.getFrontColor()}" onclick="window.location.href='${button_redirect?replace("$(id)", card.getID()?string)}';">
+                    <div class="card" style="background: ${card.getFrontColor()}; color: ${card.getFrontTextColor()}" onclick="window.location.href='${button_redirect?replace("$(id)", card.getID()?string)}';">
                         <p>${card.getFront()?no_esc}</p>
                     </div>
                 </#list>

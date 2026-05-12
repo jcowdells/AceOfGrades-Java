@@ -157,11 +157,14 @@ function onLoadQuiz(cards_data) {
         card_front.innerHTML = cards[0]["front"];
         card_back.innerHTML = cards[0]["back"];
         card_front.style.background = cards[0]["front-color"];
+        card_front.style.color = cards[0]["front-text-color"];
         card_back.style.background = cards[0]["back-color"];
+        card_back.style.color = cards[0]["back-text-color"];
         updateEditButton(cards[0]["id"], cards[0]["is-owner"]);
         if (cards.length > 1) {
             card_next.innerHTML = cards[1]["front"];
             card_next.style.background = cards[1]["front-color"];
+            card_next.style.color = cards[1]["front-text-color"];
         } else {
             card_next.remove();
         }
@@ -238,6 +241,7 @@ function onLoadQuiz(cards_data) {
             stack.replaceChildren(...card_back.cloneNode(true).childNodes);
             stack.style.fontSize = font_size + "px";
             stack.style.background = card_back.style.background;
+            stack.style.color = card_back.style.color;
 
             resizeNext(0.8);
 
@@ -452,7 +456,9 @@ function onLoadEditor() {
                 card_front.innerHTML = cards[0]["front"];
                 card_back.innerHTML = cards[0]["back"];
                 card_front.style.background = cards[0]["front-color"];
+                card_front.style.color = cards[0]["front-text-color"];
                 card_back.style.background = cards[0]["back-color"];
+                card_back.style.color = cards[0]["back-text-color"];
             }
         ).catch(error => {
             console.log(error);

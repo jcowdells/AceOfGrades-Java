@@ -14,6 +14,31 @@
             <br>
             <div style="width: 100%">
                 <hr style="color: white">
+                <h3>Change Log - 12/5/26</h3>
+                <ul style="list-style-position: inside">
+                    <li>
+                        AoG HQ received a request to change the colour scheme to purple. (UNKNOWN SOURCE)
+                    </li>
+                    <li>
+                        Switched to a different font.
+                    </li>
+                    <li>
+                        Card and pack colour can now become white to improve contrast.
+                    </li>
+                    <li>
+                        Favicon should now also be purple. (full reload using ctrl+shift+r). For the single user of the AoG app, you may need to reinstall for the colour to change? I have no control over the "app".
+                    </li>
+                    <li>
+                        Permanently banned <a href="/profiles/23">@megahistorynerd</a>.
+                    </li>
+                    <li>
+                        Removed herobrine.
+                    </li>
+                </ul>
+                <img src="/static/purpleP.jpg" style="width: 40%">
+                <p>- worlds.biggest.p</p>
+                <br>
+                <hr style="color: white">
                 <h3>Change Log - 7/5/26</h3>
                 <p>Mini update for today:</p>
                 <ul style="list-style-position: inside">

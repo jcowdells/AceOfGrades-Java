@@ -4,7 +4,7 @@
     <div id="cards-center">
         <div id="cards-container">
             <#list cards as card>
-                <div class="card prevent-select" style="background: ${card.getFrontColor()}" data-card-id="${card.getID()}" data-selected="${card.getSelected()}">
+                <div class="card prevent-select" style="background: ${card.getFrontColor()}; color: ${card.getFrontTextColor()}" data-card-id="${card.getID()}" data-selected="${card.getSelected()}">
                     <span>&#9989;</span>
                     <p>${card.getFront()?no_esc}</p>
                 </div>

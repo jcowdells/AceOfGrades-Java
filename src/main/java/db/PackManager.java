@@ -345,7 +345,7 @@ public class PackManager implements DBManager {
                 }
 
                 card_thumbnails.add(new CardThumbnail(
-                        id, front, front_color
+                        id, front, front_color, Card.getOptimalTextColor(front_color)
                 ));
             }
             return card_thumbnails;

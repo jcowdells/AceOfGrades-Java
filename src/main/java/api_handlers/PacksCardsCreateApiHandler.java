@@ -1,5 +1,6 @@
 package api_handlers;
 
+import aog.Card;
 import aog.Renderer;
 import core.Identifier;
 import core.Pair;
@@ -68,6 +69,8 @@ public class PacksCardsCreateApiHandler implements Handler {
         // put pack id into model, allows api endpoint to be generated
         Map<String, Object> model = new HashMap<>();
         model.put("pack_id", pack_id.getID());
+        model.put("front_text_color", Card.getOptimalTextColor(pack_colors.getA()));
+        model.put("back_text_color", Card.getOptimalTextColor(pack_colors.getB()));
 
         if (card_form.hasErrors()) {
             model.put("form", card_form);

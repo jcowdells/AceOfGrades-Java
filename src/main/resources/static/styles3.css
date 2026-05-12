@@ -1,5 +1,7 @@
 :root {
-    --aog-color: #9ACBD0;
+    --aog-color: #723e6a;
+    --hover-color: #c245b1;
+    --button-color: #a8559d;
 }
 
 * {
@@ -13,8 +15,8 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #444444;
-    font-family: Verdana, sans-serif;
+    background-color: #2a2a2a;
+    font-family: 'Aaux Next', sans-serif;
     background-image: url("aog.png");
     background-repeat: no-repeat;
     background-size: 30% auto;
@@ -47,7 +49,7 @@ body {
 }
 
 #navbar li a:hover {
-    color: #2973B2;
+    color: var(--hover-color);
 }
 
 #navbar li button {
@@ -61,7 +63,7 @@ body {
 }
 
 #navbar li button:hover {
-    color: #2973B2;
+    color: var(--hover-color);
 }
 
 #content {
@@ -192,7 +194,7 @@ body {
 }
 
 .packs-container a:hover {
-    color: #8ABDFF;
+    color: var(--hover-color);
 }
 
 .pack {
@@ -378,11 +380,11 @@ body {
 }
 
 .form input, .form textarea {
-    background-color: var(--aog-color);
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     padding: 5px;
-    font-family: Verdana, sans-serif;
+    font-family: 'Aaux Next', sans-serif;
     border: 2px solid white;
     width: 100%;
 }
@@ -392,7 +394,6 @@ body {
     color: white;
     border-radius: 5px;
     padding: 5px;
-    font-family: Verdana, sans-serif;
     border: 2px solid white;
 }
 
@@ -417,26 +418,24 @@ body {
 }
 
 .form-submit input {
-    background-color: #B3D8DC;
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     padding: 5px;
-    font-family: Verdana, sans-serif;
     border: 2px solid white;
     width: 100%;
     transition: 0.2s;
 }
 
 .form-submit input:hover {
-    background-color: #2973B2;
+    background-color: var(--hover-color);
 }
 
 .form-button {
-    background-color: #B3D8DC;
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     padding: 5px;
-    font-family: Verdana, sans-serif;
     border: 2px solid white;
     width: 100%;
     transition: 0.2s;
@@ -451,7 +450,7 @@ body {
 }
 
 .form-button:enabled:hover {
-    background-color: #2973B2;
+    background-color: var(--hover-color);
 }
 
 .form-checkbox input {
@@ -488,18 +487,17 @@ body {
 }
 
 .spotlight button {
-    background-color: #B3D8DC;
+    background-color: var(--button-color);
     color: white;
     border-radius: 5px;
     padding: 5px;
-    font-family: Verdana, sans-serif;
     border: 2px solid white;
     width: 100%;
     transition: 0.2s;
 }
 
 .spotlight button:hover {
-    background-color: #2973B2;
+    background-color: var(--hover-color);
 }
 
 .spotlight span {
@@ -517,7 +515,6 @@ body {
     color: white;
     border-radius: 5px;
     padding: 5px;
-    font-family: Verdana, sans-serif;
     border: 2px solid white;
     width: 100%;
     transition: 0.2s;

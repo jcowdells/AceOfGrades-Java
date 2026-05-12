@@ -1,5 +1,6 @@
 package api_handlers;
 
+import aog.Card;
 import aog.Renderer;
 import core.Identifier;
 import core.Pair;
@@ -90,6 +91,8 @@ public class CardsEditApiHandler implements Handler {
         model.put("pack_description", pack_description);
         model.put("card_id", card_id);
         model.put("form", card_form);
+        model.put("front_text_color", Card.getOptimalTextColor(pack_colors.getA()));
+        model.put("back_text_color", Card.getOptimalTextColor(pack_colors.getB()));
         if (card_form.hasErrors()) {
             Renderer.render(context, "/common/forms/card/card_edit.ftl", model);
             return;

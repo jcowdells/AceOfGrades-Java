@@ -11,7 +11,7 @@
             <div id="packs-container">
                 <#nested>
                 <#list packs as pack>
-                    <div class="card" style="background: ${pack.getFrontColor()}"
+                    <div class="card" style="color: ${pack.getFrontTextColor()};background: ${pack.getFrontColor()}"
                          onclick="window.location.href='${button_redirect?replace("$(pack_id)", pack_id!pack.getID())?replace("$(dest_id)", pack.getID())}';">
                         <h4>${pack.getName()}</h4>
                         <p>${pack.getDescription()}</p><br>
