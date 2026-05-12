@@ -35,7 +35,7 @@ body {
 
 #navbar li {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.15);
     padding: 10px;
     margin: 5px;
     border-radius: 10px;
@@ -182,7 +182,7 @@ body {
     gap: 10px;
     padding: 10px;
     grid-auto-rows: 1fr;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
 }
 
@@ -342,7 +342,7 @@ body {
 }
 
 .generic-container, .spacious-container {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
@@ -359,7 +359,7 @@ body {
 }
 
 .pack-display {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
