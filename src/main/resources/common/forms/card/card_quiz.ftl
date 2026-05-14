@@ -7,10 +7,13 @@
         data-spotlight-id="${spotlight_id}"
     >
         <div id="game-complete-template" hidden>
-            <div class="generic-container centre-content">
+            <div class="spacious-container centre-wide">
                 <h3>Congratulations!</h3>
                 <p>Pack completed!</p>
-                <@redirect_button "/packs/${pack_id}" "Go back to pack"></@redirect_button>
+                <div class="arrange-across">
+                    <@redirect_button "/packs/${pack_id}" "Go back to pack"></@redirect_button>
+                    <@redirect_button "/explore" "Go back to explore"></@redirect_button>
+                </div>
             </div>
         </div>
         <div id="card-container">
